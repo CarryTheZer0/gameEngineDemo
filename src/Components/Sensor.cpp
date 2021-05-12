@@ -7,14 +7,43 @@
 
 #include "Sensor.h"
 #include "../Entity.h"
+#include "../DebugRenderer.h"
 
 void dummy() {}
 
-Sensor::Sensor(Entity* pOwner, b2Body* pBody, b2FixtureDef def) :
-	Fixture(pOwner, pBody, def)
+Sensor::Sensor(Entity* pOwner, b2Body* pBody, DebugRenderer* pDebug, float xExtent, float yExtent,
+		b2Vec2 offset, Sensor* pointer) :
+	Fixture(pOwner),
+	m_pDebug(pDebug),
+	m_xExtent(xExtent),
+	m_yExtent(yExtent),
+	m_offset(offset)
 {
 	m_f_invokeBegin = dummy;
 	m_f_invokeEnd = dummy;
+
+	b2PolygonShape box;
+	box.SetAsBox(xExtent, yExtent, offset, 0.0f);
+	b2FixtureDef def;
+	def.shape = &box;
+	def.isSensor = true;
+	def.userData.pointer = reinterpret_cast<uintptr_t>(pointer);
+
+	init(pBody, def);
+}
+
+void Sensor::render(float percent, glm::vec2 camera)
+{
+	b2Vec2 pos = m_pFixture->GetBody()->GetPosition() + m_offset;
+	float x = pos.x * 80;
+	float y = pos.y * 80;
+	float xExtent = m_xExtent * 80;
+	float yExtent = m_yExtent * 80;
+
+	m_pDebug->drawLine(glm::vec2(x + xExtent, y + yExtent), glm::vec2(x - xExtent, y + yExtent), camera);
+	m_pDebug->drawLine(glm::vec2(x - xExtent, y + yExtent), glm::vec2(x - xExtent, y - yExtent), camera);
+	m_pDebug->drawLine(glm::vec2(x - xExtent, y - yExtent), glm::vec2(x + xExtent, y - yExtent), camera);
+	m_pDebug->drawLine(glm::vec2(x + xExtent, y - yExtent), glm::vec2(x + xExtent, y + yExtent), camera);
 }
 
 void Sensor::initBegin(std::function<void()> func)

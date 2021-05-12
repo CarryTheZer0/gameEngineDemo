@@ -12,6 +12,7 @@
 #include "Game.h"
 #include "ResourceManager.h"
 #include "SpriteRenderer.h"
+#include "DebugRenderer.h"
 #include "ContactListener.h"
 #include "PhotographSystem.h"
 
@@ -36,14 +37,27 @@ void Game::init()
 {
     // load shaders
     ResourceManager::loadShader("src/SpriteVertexShader.glsl", "src/SpriteFragmentShader.glsl", nullptr, "sprite");
+    ResourceManager::loadShader("src/DebugVertexShader.glsl", "src/DebugFragmentShader.glsl", nullptr, "debug");
+
     // configure shaders
     glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(m_width),
-        static_cast<float>(m_height), 0.0f, -1.0f, 1.0f);
-    ResourceManager::getShader("sprite").use().setInteger("image", 0);
+            static_cast<float>(m_height), 0.0f, -1.0f, 1.0f);
+
+    // debug
+    ResourceManager::getShader("debug").use();
+    ResourceManager::getShader("debug").setMatrix4("projection", projection);
+
+    // sprite
+    ResourceManager::getShader("sprite").use().setInteger("images", 0);
     ResourceManager::getShader("sprite").setMatrix4("projection", projection);
+
     // set render-specific controls
+    Shader debugShader = ResourceManager::getShader("debug");
+    m_pDebugRenderer = new DebugRenderer(debugShader);
+
     Shader shader = ResourceManager::getShader("sprite");
     m_pRenderer = new SpriteRenderer(shader);
+
     // load textures
     ResourceManager::loadTexture("textures/Spritesheet.png", true, "run");
     ResourceManager::loadTexture("textures/SpritesheetAnimal.png", true, "animal");
@@ -84,28 +98,28 @@ int Game::run()
 
 	PhotographSystem photo;
 
-	Floor floorTest = Floor(m_pRenderer);
-	floorTest.init(&world, glm::vec2(0.0f, 5.0f));
+	Floor floorTest = Floor(m_pRenderer, m_pDebugRenderer);
+	floorTest.init(&world, glm::vec2(0.0f, 5.0f), m_pDebugRenderer);
 	m_entities.push_back(&floorTest);
 
-	Floor floorTest2 = Floor(m_pRenderer);
-	floorTest2.init(&world, glm::vec2(9.0f, 6.0f));
+	Floor floorTest2 = Floor(m_pRenderer, m_pDebugRenderer);
+	floorTest2.init(&world, glm::vec2(9.0f, 6.0f), m_pDebugRenderer);
 	m_entities.push_back(&floorTest2);
 
-	Floor floorTest3 = Floor(m_pRenderer);
-	floorTest3.init(&world, glm::vec2(18.0f, 5.0f));
+	Floor floorTest3 = Floor(m_pRenderer, m_pDebugRenderer);
+	floorTest3.init(&world, glm::vec2(18.0f, 4.5f), m_pDebugRenderer);
 	m_entities.push_back(&floorTest3);
 
-	Floor floorTest4 = Floor(m_pRenderer);
-	floorTest4.init(&world, glm::vec2(27.0f, 4.0f));
+	Floor floorTest4 = Floor(m_pRenderer, m_pDebugRenderer);
+	floorTest4.init(&world, glm::vec2(27.0f, 3.5f), m_pDebugRenderer);
 	m_entities.push_back(&floorTest4);
 
-	Player playerTest = Player(this, m_pRenderer, &m_input, &photo);
-	playerTest.init(&world, glm::vec2(0.0f, 1.0f));
+	Player playerTest = Player(this, m_pRenderer, m_pDebugRenderer, &m_input, &photo);
+	playerTest.init(&world, glm::vec2(0.0f, -1.0f), m_pDebugRenderer);
 	m_entities.push_back(&playerTest);
 
-	Animal animalTest = Animal(m_pRenderer, &playerTest);
-	animalTest.init(&world, glm::vec2(1.0f, -2.0f));
+	Animal animalTest = Animal(m_pRenderer, m_pDebugRenderer, &playerTest);
+	animalTest.init(&world, glm::vec2(1.0f, -2.0f), m_pDebugRenderer);
 	m_entities.push_back(&animalTest);
 
 	photo.addEntity(&animalTest);
@@ -159,6 +173,7 @@ int Game::run()
 	    	e->render(percent, m_cameraPos);
 	    }
 		m_pRenderer->draw();
+		m_pDebugRenderer->draw();
 
 		glfwSwapBuffers(m_pWindow);
 	}

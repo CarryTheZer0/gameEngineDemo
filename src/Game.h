@@ -12,6 +12,7 @@
 #include "InputHandler.h"
 
 class SpriteRenderer;
+class DebugRenderer;
 class Entity;
 
 class Game
@@ -30,6 +31,7 @@ public:
 	void setCamera(glm::vec2 c) { m_cameraPos = c; }
 private:
 	SpriteRenderer* m_pRenderer;
+	DebugRenderer* m_pDebugRenderer;
 
 	bool m_running;
 	int m_width;
