@@ -24,7 +24,7 @@ public:
     void drawBox(glm::vec4 srcCoords,
     		glm::vec2 position, glm::vec2 camera = glm::vec2(), glm::vec2 size = glm::vec2(10.0f, 10.0f),
 			float rotate = 0.0f, glm::vec2 rotateOffset = glm::vec2(), glm::vec3 color = glm::vec3(1.0f));
-    void drawLine(glm::vec2 a, glm::vec2 b, glm::vec2 camera);
+    void drawLine(glm::vec2 a, glm::vec2 b, glm::vec2 camera, glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f));
     void draw();
 private:
     // Render state

@@ -23,14 +23,11 @@ Animal::Animal(SpriteRenderer* pRenderer, DebugRenderer* pDebug, Player* pPlayer
 	m_pPlayer(pPlayer),
 	m_pRenderer(pRenderer),
 	m_spawnPos(),
-	m_facingRight(false)
+	m_facingRight(true)
 {}
 
 void Animal::update(float deltaTime)
 {
-	float x = m_body.getBody()->GetLinearVelocity().x;
-	float y = m_body.getBody()->GetLinearVelocity().y;
-
 	m_body.update();
 	m_sprite.update(deltaTime);
 
@@ -47,7 +44,6 @@ void Animal::update(float deltaTime)
 	int32 childIndex = 0;
 
 	b2Fixture* pFix = m_pPlayer->getComponent<Fixture>()->getFixture();
-	b2Vec2 vectest = pFix->GetBody()->GetPosition();
 	bool hit = pFix->RayCast(&o, i, childIndex);
 	if (hit) m_charging = true;
 

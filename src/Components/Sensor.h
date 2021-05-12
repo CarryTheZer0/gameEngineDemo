@@ -34,6 +34,7 @@ private:
 	float m_xExtent;
 	float m_yExtent;
 	b2Vec2 m_offset;
+	glm::vec3 m_debugColor;
 
 	std::function<void()> m_f_invokeBegin;
 	std::function<void()> m_f_invokeEnd;

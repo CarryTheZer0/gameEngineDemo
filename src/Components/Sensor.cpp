@@ -17,7 +17,8 @@ Sensor::Sensor(Entity* pOwner, b2Body* pBody, DebugRenderer* pDebug, float xExte
 	m_pDebug(pDebug),
 	m_xExtent(xExtent),
 	m_yExtent(yExtent),
-	m_offset(offset)
+	m_offset(offset),
+	m_debugColor(1.0f, 1.0f, 0.0f)
 {
 	m_f_invokeBegin = dummy;
 	m_f_invokeEnd = dummy;
@@ -40,10 +41,10 @@ void Sensor::render(float percent, glm::vec2 camera)
 	float xExtent = m_xExtent * 80;
 	float yExtent = m_yExtent * 80;
 
-	m_pDebug->drawLine(glm::vec2(x + xExtent, y + yExtent), glm::vec2(x - xExtent, y + yExtent), camera);
-	m_pDebug->drawLine(glm::vec2(x - xExtent, y + yExtent), glm::vec2(x - xExtent, y - yExtent), camera);
-	m_pDebug->drawLine(glm::vec2(x - xExtent, y - yExtent), glm::vec2(x + xExtent, y - yExtent), camera);
-	m_pDebug->drawLine(glm::vec2(x + xExtent, y - yExtent), glm::vec2(x + xExtent, y + yExtent), camera);
+	m_pDebug->drawLine(glm::vec2(x + xExtent, y + yExtent), glm::vec2(x - xExtent, y + yExtent), camera, m_debugColor);
+	m_pDebug->drawLine(glm::vec2(x - xExtent, y + yExtent), glm::vec2(x - xExtent, y - yExtent), camera, m_debugColor);
+	m_pDebug->drawLine(glm::vec2(x - xExtent, y - yExtent), glm::vec2(x + xExtent, y - yExtent), camera, m_debugColor);
+	m_pDebug->drawLine(glm::vec2(x + xExtent, y - yExtent), glm::vec2(x + xExtent, y + yExtent), camera, m_debugColor);
 }
 
 void Sensor::initBegin(std::function<void()> func)
@@ -59,9 +60,11 @@ void Sensor::initEnd(std::function<void()> func)
 void Sensor::invokeBegin()
 {
 	m_f_invokeBegin();
+	m_debugColor = glm::vec3(0.0f, 1.0f, 0.0f);
 }
 
 void Sensor::invokeEnd()
 {
 	m_f_invokeEnd();
+	m_debugColor = glm::vec3(1.0f, 1.0f, 0.0f);
 }
