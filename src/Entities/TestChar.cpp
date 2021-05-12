@@ -10,11 +10,12 @@
 #include "TestChar.h"
 
 #include "../SpriteRenderer.h"
+#include "../DebugRenderer.h"
 #include "../InputHandler.h"
 #include "../PhotographSystem.h"
 #include "../Game.h"
 
-Player::Player(Game* pGame, SpriteRenderer* pRenderer, InputHandler* pInput, PhotographSystem* pPhoto) :
+Player::Player(Game* pGame, SpriteRenderer* pRenderer, DebugRenderer* pDebug, InputHandler* pInput, PhotographSystem* pPhoto) :
 	m_sprite(this, pRenderer, "run", glm::vec4(0.0f, 0.0f, 0.2f, 1.0f), 0.2f, 0.2f),
 	m_spriteHead(this, pRenderer, "run", glm::vec4(0.8f, 0.33f, 1.0f, 0.66f), glm::vec2(), 0.2f, glm::vec2(0.0f, -0.3f)),
 	m_pRenderer(pRenderer),
@@ -118,15 +119,19 @@ void Player::update(float deltaTime)
 void Player::render(float percent, glm::vec2 camera)
 {
 	m_sprite.render(percent, camera);
+	m_colliderMain.render(percent, camera);
+	m_groundCheck.render(percent, camera);
+	m_leftCheck.render(percent, camera);
+	m_rightCheck.render(percent, camera);
 	if (m_snap)
 		m_spriteHead.render(percent, camera);
 }
 
-void Player::init(b2World* pWorld, glm::vec2 pos)
+void Player::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug)
 {
 	addComponent(&m_sprite);
 	addComponent(&m_body);
-	addComponent(&m_fixture);
+	addComponent(&m_colliderMain);
 	m_sprite.addAnimation(glm::vec4(0.0f, 0.0f, 0.2f, 0.33f), 4, "run");
 	m_sprite.addAnimation(glm::vec4(0.8f, 0.0f, 1.0f, 0.33f), 1, "snap");
 	m_sprite.addAnimation(glm::vec4(0.0f, 0.33f, 0.2f, 0.66f), 4, "jump");
@@ -138,43 +143,24 @@ void Player::init(b2World* pWorld, glm::vec2 pos)
 	bodyDef.fixedRotation = true;
 	m_body = Body(this, pWorld, bodyDef, pos);
 
-	b2PolygonShape colliderBox;
-	colliderBox.SetAsBox(m_sprite.getDimensions().x / 80.0f / 3.0f, m_sprite.getDimensions().y / 80.0f / 2.0f);
-	b2FixtureDef colliderDef;
-	colliderDef.shape = &colliderBox;
-	colliderDef.density = 1.33f;
-	colliderDef.friction = 0.3f;
-	m_fixture = Fixture(this, m_body.getBody(), colliderDef);
+	m_colliderMain = BoxCollider(this, m_body.getBody(), pDebug,
+			m_sprite.getDimensions().x / 80.0f / 3.0f, m_sprite.getDimensions().y / 80.0f / 2.0f,
+			b2Vec2(), 1.33f, 0.3f);
 
-	b2PolygonShape gcBox;
-	gcBox.SetAsBox(m_sprite.getDimensions().x / 80.0f / 3.1f, m_sprite.getDimensions().y / 80.0f / 10.0f,
-			b2Vec2(0.0f, m_sprite.getDimensions().y / 80.0f / 2.0f), 0.0f);
-	b2FixtureDef gcDef;
-	gcDef.shape = &gcBox;
-	gcDef.isSensor = true;
-	gcDef.userData.pointer = reinterpret_cast<uintptr_t>(&m_groundCheck);
-	m_groundCheck = Sensor(this, m_body.getBody(), gcDef);
+	m_groundCheck = Sensor(this, m_body.getBody(), pDebug,
+			m_sprite.getDimensions().x / 80.0f / 3.1f, m_sprite.getDimensions().y / 80.0f / 10.0f,
+			b2Vec2(0.0f, m_sprite.getDimensions().y / 80.0f / 2.0f), &m_groundCheck);
 	m_groundCheck.initBegin(std::bind(&Player::contactFloor, this));
 
-	b2PolygonShape rcBox;
-	rcBox.SetAsBox(m_sprite.getDimensions().x / 80.0f / 10.0f, m_sprite.getDimensions().y / 80.0f / 2.1f,
-			b2Vec2(m_sprite.getDimensions().x / 80.0f / 3.0f, 0.0f), 0.0f);
-	b2FixtureDef rcDef;
-	rcDef.shape = &rcBox;
-	rcDef.isSensor = true;
-	rcDef.userData.pointer = reinterpret_cast<uintptr_t>(&m_rightCheck);
-	m_rightCheck = Sensor(this, m_body.getBody(), rcDef);
+	m_rightCheck = Sensor(this, m_body.getBody(), pDebug,
+			m_sprite.getDimensions().x / 80.0f / 10.0f, m_sprite.getDimensions().y / 80.0f / 2.1f,
+			b2Vec2(m_sprite.getDimensions().x / 80.0f / 3.0f, 0.0f), &m_rightCheck);
 	m_rightCheck.initBegin(std::bind(&Player::contactEdge, this, true));
 	m_rightCheck.initEnd(std::bind(&Player::endContactEdge, this));
 
-	b2PolygonShape lcBox;
-	lcBox.SetAsBox(m_sprite.getDimensions().x / 80.0f / 10.0f, m_sprite.getDimensions().y / 80.0f / 2.1f,
-		b2Vec2(-m_sprite.getDimensions().x / 80.0f / 3.0f, 0.0f), 0.0f);
-	b2FixtureDef lcDef;
-	lcDef.shape = &lcBox;
-	lcDef.isSensor = true;
-	lcDef.userData.pointer = reinterpret_cast<uintptr_t>(&m_leftCheck);
-	m_leftCheck = Sensor(this, m_body.getBody(), lcDef);
+	m_leftCheck = Sensor(this, m_body.getBody(), pDebug,
+			m_sprite.getDimensions().x / 80.0f / 10.0f, m_sprite.getDimensions().y / 80.0f / 2.1f,
+			b2Vec2(-m_sprite.getDimensions().x / 80.0f / 3.0f, 0.0f), &m_leftCheck);
 	m_leftCheck.initBegin(std::bind(&Player::contactEdge, this, false));
 	m_leftCheck.initEnd(std::bind(&Player::endContactEdge, this));
 }

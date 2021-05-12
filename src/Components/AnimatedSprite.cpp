@@ -8,6 +8,7 @@
 #include "AnimatedSprite.h"
 #include "../Entity.h"
 #include "../SpriteRenderer.h"
+#include "../DebugRenderer.h"
 #include "Body.h"
 
 AnimatedSprite::AnimatedSprite(Entity* pOwner, SpriteRenderer* pRenderer, const char* name,

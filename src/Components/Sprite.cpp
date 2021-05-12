@@ -6,6 +6,7 @@
  */
 
 #include "../SpriteRenderer.h"
+#include "../DebugRenderer.h"
 #include "../Entity.h"
 #include "../ResourceManager.h"
 #include "Sprite.h"

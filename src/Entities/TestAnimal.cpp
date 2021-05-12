@@ -15,9 +15,10 @@
 #include "TestAnimal.h"
 
 #include "../SpriteRenderer.h"
+#include "../DebugRenderer.h"
 #include "testChar.h"
 
-Animal::Animal(SpriteRenderer* pRenderer, Player* pPlayer) :
+Animal::Animal(SpriteRenderer* pRenderer, DebugRenderer* pDebug, Player* pPlayer) :
 	m_sprite(this, pRenderer, "animal", glm::vec4(0.0f, 0.0f, 0.25f, 1.0f), 0.2f, 0.2f),
 	m_pPlayer(pPlayer),
 	m_pRenderer(pRenderer),
@@ -68,6 +69,9 @@ void Animal::update(float deltaTime)
 void Animal::render(float percent, glm::vec2 camera)
 {
 	m_sprite.render(percent, camera);
+	m_colliderMain.render(percent, camera);
+	m_leftCheck.render(percent, camera);
+	m_rightCheck.render(percent, camera);
 }
 
 void Animal::proc()
@@ -110,7 +114,7 @@ void Animal::charge()
 	}
 }
 
-void Animal::init(b2World* pWorld, glm::vec2 pos)
+void Animal::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug)
 {
 	addComponent(&m_sprite);
 	addComponent(&m_body);
@@ -126,33 +130,19 @@ void Animal::init(b2World* pWorld, glm::vec2 pos)
 	bodyDef.fixedRotation = true;
 	m_body = Body(this, pWorld, bodyDef, pos);
 
-	b2PolygonShape colliderBox;
-	colliderBox.SetAsBox(m_sprite.getDimensions().x / 80.0f / 3.0f, m_sprite.getDimensions().y / 80.0f / 4.0f);
-	b2FixtureDef colliderDef;
-	colliderDef.shape = &colliderBox;
-	colliderDef.density = 1.33f;
-	colliderDef.friction = 0.3f;
-	m_fixture = Fixture(this, m_body.getBody(), colliderDef);
+	m_colliderMain = BoxCollider(this, m_body.getBody(), pDebug,
+			m_sprite.getDimensions().x / 80.0f /  3.0f, m_sprite.getDimensions().y / 80.0f / 4.0f,
+			b2Vec2(), 1.33f, 0.3f);
 
-	b2PolygonShape rcBox;
-	rcBox.SetAsBox(m_sprite.getDimensions().x / 80.0f / 10.0f, m_sprite.getDimensions().y / 80.0f / 8.0f,
-			b2Vec2(m_sprite.getDimensions().x / 80.0f / 3.0f, 0.0f), 0.0f);
-	b2FixtureDef rcDef;
-	rcDef.shape = &rcBox;
-	rcDef.isSensor = true;
-	rcDef.userData.pointer = reinterpret_cast<uintptr_t>(&m_rightCheck);
-	m_rightCheck = Sensor(this, m_body.getBody(), rcDef);
+	m_rightCheck = Sensor(this, m_body.getBody(), pDebug,
+			m_sprite.getDimensions().x / 80.0f / 10.0f, m_sprite.getDimensions().y / 80.0f / 8.0f,
+			b2Vec2(m_sprite.getDimensions().x / 80.0f / 3.0f, 0.0f), &m_rightCheck);
 	m_rightCheck.initBegin(std::bind(&Animal::contactEdge, this, true));
 	m_rightCheck.initEnd(std::bind(&Animal::endContactEdge, this));
 
-	b2PolygonShape lcBox;
-	lcBox.SetAsBox(m_sprite.getDimensions().x / 80.0f / 10.0f, m_sprite.getDimensions().y / 80.0f / 8.0f,
-		b2Vec2(-m_sprite.getDimensions().x / 80.0f / 3.0f, 0.0f), 0.0f);
-	b2FixtureDef lcDef;
-	lcDef.shape = &lcBox;
-	lcDef.isSensor = true;
-	lcDef.userData.pointer = reinterpret_cast<uintptr_t>(&m_leftCheck);
-	m_leftCheck = Sensor(this, m_body.getBody(), lcDef);
+	m_leftCheck = Sensor(this, m_body.getBody(), pDebug,
+			m_sprite.getDimensions().x / 80.0f / 10.0f, m_sprite.getDimensions().y / 80.0f / 8.0f,
+			b2Vec2(-m_sprite.getDimensions().x / 80.0f / 3.0f, 0.0f), &m_leftCheck);
 	m_leftCheck.initBegin(std::bind(&Animal::contactEdge, this, false));
 	m_leftCheck.initEnd(std::bind(&Animal::endContactEdge, this));
 }

@@ -8,11 +8,9 @@
 #include "../Entity.h"
 #include "Fixture.h"
 
-Fixture::Fixture(Entity* pOwner, b2Body* pBody, b2FixtureDef def) :
+Fixture::Fixture(Entity* pOwner) :
 	Component(pOwner)
-{
-	init(pBody, def);
-}
+{}
 
 void Fixture::update()
 {}

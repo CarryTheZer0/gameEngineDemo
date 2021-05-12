@@ -18,15 +18,15 @@ class Fixture : public Component
 {
 public:
 	Fixture() = default;
-	Fixture(Entity* pOwner, b2Body* pBody, b2FixtureDef def);
+	Fixture(Entity* pOwner);
 	~Fixture() = default;
 
 	void update();
+	void init(b2Body* pBody, b2FixtureDef def);
 
 	b2Fixture* getFixture();
 protected:
 	b2Fixture* m_pFixture;
-	void init(b2Body* pBody, b2FixtureDef def);
 };
 
 #endif /* COMPONENTS_FIXTURE_H_ */

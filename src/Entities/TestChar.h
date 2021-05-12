@@ -13,21 +13,22 @@
 #include "../Components/AnimatedSprite.h"
 #include "../Components/Sprite.h"
 #include "../Components/Body.h"
-#include "../Components/Fixture.h"
+#include "../Components/BoxCollider.h"
 #include "../Components/Sensor.h"
 
 class InputHandler;
 class SpriteRenderer;
+class DebugRenderer;
 class Game;
 class PhotographSystem;
 
 class Player : public Entity
 {
 public:
-	Player(Game* pGame, SpriteRenderer* pRenderer, InputHandler* pInput, PhotographSystem* pPhoto);
+	Player(Game* pGame, SpriteRenderer* pRenderer, DebugRenderer* pDebug, InputHandler* pInput, PhotographSystem* pPhoto);
 	~Player() = default;
 
-	void init(b2World* pWorld, glm::vec2 pos);
+	void init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug);
 	void update(float deltaTime) override;
 	void render(float percent, glm::vec2 camera) override;
 
@@ -42,7 +43,7 @@ private:
 	AnimatedSprite m_sprite;
 	Sprite m_spriteHead;
 	Body m_body;
-	Fixture m_fixture;
+	BoxCollider m_colliderMain;
 	Sensor m_groundCheck;
 	Sensor m_leftCheck;
 	Sensor m_rightCheck;

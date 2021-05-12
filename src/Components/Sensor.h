@@ -13,19 +13,28 @@
 #include "Fixture.h"
 
 class Entity;
+class DebugRenderer;
 
 class Sensor : public Fixture
 {
 public:
 	Sensor() = default;
-	Sensor(Entity* pOwner, b2Body* pBody, b2FixtureDef def);
+	Sensor(Entity* pOwner, b2Body* pBody, DebugRenderer* pDebug, float xExtent, float yExtent,
+			b2Vec2 offset, Sensor* pointer);
 	~Sensor() = default;
 
 	void initBegin(std::function<void()> func);
 	void initEnd(std::function<void()> func);
 	void invokeBegin();
 	void invokeEnd();
+
+	void render(float percent, glm::vec2 camera);
 private:
+	DebugRenderer* m_pDebug;
+	float m_xExtent;
+	float m_yExtent;
+	b2Vec2 m_offset;
+
 	std::function<void()> m_f_invokeBegin;
 	std::function<void()> m_f_invokeEnd;
 };

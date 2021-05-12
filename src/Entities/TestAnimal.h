@@ -11,19 +11,20 @@
 #include "../Entity.h"
 #include "../Components/AnimatedSprite.h"
 #include "../Components/Body.h"
-#include "../Components/Fixture.h"
+#include "../Components/BoxCollider.h"
 #include "../Components/Sensor.h"
 
 class SpriteRenderer;
+class DebugRenderer;
 class Player;
 
 class Animal : public Entity
 {
 public:
-	Animal(SpriteRenderer* pRenderer, Player* pPlayer);
+	Animal(SpriteRenderer* pRenderer, DebugRenderer* pDebug, Player* pPlayer);
 	~Animal() = default;
 
-	void init(b2World* pWorld, glm::vec2 pos);
+	void init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug);
 	void update(float deltaTime) override;
 	void render(float percent, glm::vec2 camera) override;
 
@@ -42,7 +43,7 @@ private:
 	bool m_charging;
 	int m_contact;
 	bool m_facingRight;
-	Fixture m_fixture;
+	BoxCollider m_colliderMain;
 	glm::vec2 m_spawnPos;
 };
 

@@ -7,13 +7,6 @@
 
 #include "SpriteRenderer.h"
 
-struct Vertex
-{
-   	glm::vec2 position;
-   	glm::vec2 texCoords;
-   	float texID;
-};
-
 SpriteRenderer::SpriteRenderer(Shader &shader) :
 	m_batchOffset(0),
 	m_texCount(0),
@@ -118,7 +111,7 @@ void SpriteRenderer::drawSprite(Texture2D &texture, glm::vec4 srcCoords,
 
 void SpriteRenderer::setShadows(glm::vec2 pos, glm::vec2 dir)
 {
-	//pos = glm::vec2(512.0f, 440.0f); // TODO set pos correctly
+	m_shader.use();
     m_shader.setVector2f("viewDirection", dir);
     m_shader.setVector2f("castOrigin", pos);
 }
@@ -126,33 +119,13 @@ void SpriteRenderer::setShadows(glm::vec2 pos, glm::vec2 dir)
 void SpriteRenderer::draw()
 {
 	// draw 2 triangles per sprite
+	m_shader.use();
 	glBindVertexArray(m_quadVAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_quadIBO);
 	glDrawElements(GL_TRIANGLES, m_batchOffset * 6, GL_UNSIGNED_INT, (void*)0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 	m_batchOffset = 0;
-
-//	glColor3f(1.0f, 0.0f, 0.0f);
-//	glLineWidth(2.5);
-//	glBegin(GL_LINES);
-//	glVertex3f(0.0, -10, 0);
-//	glVertex3f(0.0, 10, 0);
-//	glEnd();
-//	GLenum err1 = glGetError();
-
-//	GLfloat lineVertices[] =
-//	{
-//			-100.0f, -100.0f,
-//			100.0f, 100.0f
-//	};
-//
-//	glColor3f(1.0f, 0.0f, 0.0f);
-//	glLineWidth(10);
-//	glEnableClientState(GL_VERTEX_ARRAY);
-//	glVertexPointer(2, GL_FLOAT, 0, lineVertices);
-//	glDrawArrays(GL_LINES, 0, 2);
-//	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void SpriteRenderer::initRenderData()
