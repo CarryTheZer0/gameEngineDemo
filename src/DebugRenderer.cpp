@@ -9,8 +9,8 @@
 
 struct line
 {
-	float x1; float y1; float z1;
-	float x2; float y2; float z2;
+	float x1; float y1; float r1; float g1; float b1;
+	float x2; float y2; float r2; float g2; float b2;
 };
 
 DebugRenderer::DebugRenderer(Shader &shader) :
@@ -49,17 +49,17 @@ void DebugRenderer::drawBox(glm::vec4 srcCoords, glm::vec2 position, glm::vec2 c
 
     // generate vertex data
     float vertices[] = {
-    	pos1.x, pos1.y, 0.0f, // first vertex
-    	pos2.x, pos2.y, 0.0f, // second vertex
+    	pos1.x, pos1.y, 1.0f, 1.0f, 1.0f, // first vertex
+    	pos2.x, pos2.y, 1.0f, 1.0f, 1.0f, // second vertex
 
-		pos2.x, pos2.y, 0.0f, // first vertex
-		pos3.x, pos3.y, 0.0f, // second vertex
+		pos2.x, pos2.y, 1.0f, 1.0f, 1.0f, // first vertex
+		pos3.x, pos3.y, 1.0f, 1.0f, 1.0f, // second vertex
 
-		pos3.x, pos3.y, 0.0f, // first vertex
-		pos4.x, pos4.y, 0.0f, // second vertex
+		pos3.x, pos3.y, 1.0f, 1.0f, 1.0f, // first vertex
+		pos4.x, pos4.y, 1.0f, 1.0f, 1.0f, // second vertex
 
-		pos4.x, pos4.y, 0.0f, // first vertex
-		pos1.x, pos1.y, 0.0f // second vertex
+		pos4.x, pos4.y, 1.0f, 1.0f, 1.0f, // first vertex
+		pos1.x, pos1.y, 1.0f, 1.0f, 1.0f // second vertex
     };
 
     // write to vertex buffer
@@ -74,14 +74,14 @@ void DebugRenderer::drawBox(glm::vec4 srcCoords, glm::vec2 position, glm::vec2 c
 	m_shader.setMatrix4("view", view);
 }
 
-void DebugRenderer::drawLine(glm::vec2 a, glm::vec2 b, glm::vec2 camera)
+void DebugRenderer::drawLine(glm::vec2 a, glm::vec2 b, glm::vec2 camera, glm::vec3 color)
 {
     m_shader.use();
 
     // generate vertex data
     float vertices[] = {
-    	a.x, a.y, 0.0f, // first vertex
-    	b.x, b.y, 0.0f, // second vertex
+    	a.x, a.y, color.x, color.y, color.z, // first vertex
+    	b.x, b.y, color.x, color.y, color.z  // second vertex
     };
 
     // write to vertex buffer
@@ -115,8 +115,8 @@ void DebugRenderer::initRenderData()
 
 	GLfloat lineSeg[] =
 	{
-	    0.0f, 0.0f, 0.0f, // first vertex
-	    2.0f, 2.0f, 0.0f // second vertex
+	    0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // first vertex
+	    2.0f, 2.0f, 1.0f, 1.0f, 1.0f // second vertex
 	};
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_lineVBO);
@@ -124,7 +124,10 @@ void DebugRenderer::initRenderData()
 
 	glBindVertexArray(m_lineVAO);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)8);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);

@@ -22,7 +22,7 @@ public:
 	Sprite() = default;
 	Sprite(Entity* pOwner, SpriteRenderer* pRenderer, const char* name,
 			glm::vec4 srcRect, glm::vec2 offset, float scale, glm::vec2 rotateOffset = glm::vec2());
-	~Sprite() = default;
+	virtual ~Sprite() = default;
 
 	virtual void render(float percent, glm::vec2 camera);
 

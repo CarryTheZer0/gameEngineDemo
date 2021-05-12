@@ -19,7 +19,7 @@ class Fixture : public Component
 public:
 	Fixture() = default;
 	Fixture(Entity* pOwner);
-	~Fixture() = default;
+	virtual ~Fixture() = default;
 
 	void update();
 	void init(b2Body* pBody, b2FixtureDef def);
