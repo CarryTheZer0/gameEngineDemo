@@ -33,7 +33,11 @@ void Floor::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug)
 	b2BodyDef groundBodyDef;
 	m_body = Body(this, pWorld, groundBodyDef, pos);
 
+	b2Filter terrainFilter;
+	terrainFilter.categoryBits = 0x0001; // Terrain
+
 	m_colliderMain = BoxCollider(this, m_body.getBody(), pDebug,
-			m_sprite.getDimensions().x / 80.0f /  2.3f, m_sprite.getDimensions().y / 80.0f /  5.0f,
+			m_sprite.getDimensions().x / 80.0f /  2.2f, m_sprite.getDimensions().y / 80.0f /  5.3f,
 			b2Vec2(), 0.0f, 0.3f);
+	m_colliderMain.getFixture()->SetFilterData(terrainFilter);
 }

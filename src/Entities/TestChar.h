@@ -14,6 +14,7 @@
 #include "../Components/Sprite.h"
 #include "../Components/Body.h"
 #include "../Components/BoxCollider.h"
+#include "../Components/CircleCollider.h"
 #include "../Components/Sensor.h"
 
 class InputHandler;
@@ -32,7 +33,11 @@ public:
 	void update(float deltaTime) override;
 	void render(float percent, glm::vec2 camera) override;
 
+	void jump(float xVel);
+	void reset();
+
 	void contactFloor();
+	void endContactFloor();
 	void contactEdge(bool right);
 	void endContactEdge();
 private:
@@ -44,12 +49,14 @@ private:
 	Sprite m_spriteHead;
 	Body m_body;
 	BoxCollider m_colliderMain;
+	CircleCollider m_colliderCircle;
 	Sensor m_groundCheck;
 	Sensor m_leftCheck;
 	Sensor m_rightCheck;
-	bool m_jumping;
+	bool m_grounded;
 	bool m_snap;
 	bool m_facingRight;
+	bool m_shouldReset;
 	int m_contact;
 };
 
