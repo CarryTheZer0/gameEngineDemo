@@ -22,11 +22,13 @@ public:
 	~BoxCollider() = default;
 
 	void render(float percent, glm::vec2 camera);
+	void flipX();
 private:
 	DebugRenderer* m_pDebug;
 	float m_xExtent;
 	float m_yExtent;
 	b2Vec2 m_offset;
+	int m_vertexCount;
 };
 
 #endif /* COMPONENTS_BOXCOLLIDER_H_ */

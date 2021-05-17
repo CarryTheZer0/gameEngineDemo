@@ -103,24 +103,25 @@ int Game::run()
 	m_entities.push_back(&floorTest);
 
 	Floor floorTest2 = Floor(m_pRenderer, m_pDebugRenderer);
-	floorTest2.init(&world, glm::vec2(9.0f, 6.0f), m_pDebugRenderer);
+	floorTest2.init(&world, glm::vec2(8.0f, 6.0f), m_pDebugRenderer);
 	m_entities.push_back(&floorTest2);
 
 	Floor floorTest3 = Floor(m_pRenderer, m_pDebugRenderer);
-	floorTest3.init(&world, glm::vec2(18.0f, 4.5f), m_pDebugRenderer);
+	floorTest3.init(&world, glm::vec2(16.0f, 6.0f), m_pDebugRenderer);
 	m_entities.push_back(&floorTest3);
 
 	Floor floorTest4 = Floor(m_pRenderer, m_pDebugRenderer);
-	floorTest4.init(&world, glm::vec2(27.0f, 3.5f), m_pDebugRenderer);
+	floorTest4.init(&world, glm::vec2(24.0f, 4.5f), m_pDebugRenderer);
 	m_entities.push_back(&floorTest4);
 
 	Player playerTest = Player(this, m_pRenderer, m_pDebugRenderer, &m_input, &photo);
-	playerTest.init(&world, glm::vec2(0.0f, -1.0f), m_pDebugRenderer);
-	m_entities.push_back(&playerTest);
+	playerTest.init(&world, glm::vec2(0.0f, 1.0f), m_pDebugRenderer);
 
 	Animal animalTest = Animal(m_pRenderer, m_pDebugRenderer, &playerTest);
-	animalTest.init(&world, glm::vec2(1.0f, -2.0f), m_pDebugRenderer);
+	animalTest.init(&world, glm::vec2(5.0f, 4.6f), m_pDebugRenderer, true);
+
 	m_entities.push_back(&animalTest);
+	m_entities.push_back(&playerTest);
 
 	photo.addEntity(&animalTest);
 

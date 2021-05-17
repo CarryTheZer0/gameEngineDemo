@@ -12,6 +12,7 @@
 #include "../Components/AnimatedSprite.h"
 #include "../Components/Body.h"
 #include "../Components/BoxCollider.h"
+#include "../Components/CircleCollider.h"
 #include "../Components/Sensor.h"
 
 class SpriteRenderer;
@@ -24,27 +25,31 @@ public:
 	Animal(SpriteRenderer* pRenderer, DebugRenderer* pDebug, Player* pPlayer);
 	~Animal() = default;
 
-	void init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug);
+	void init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug, bool facingRight = false);
 	void update(float deltaTime) override;
 	void render(float percent, glm::vec2 camera) override;
 
 	void proc();
 	void charge();
+	void setFacingRight(bool facing);
 
-	void contactEdge(bool right);
+	void contactEdge();
 	void endContactEdge();
 private:
 	SpriteRenderer* m_pRenderer;
-	AnimatedSprite m_sprite;
-	Sensor m_leftCheck;
-	Sensor m_rightCheck;
 	Player* m_pPlayer;
+
+	AnimatedSprite m_sprite;
 	Body m_body;
-	bool m_charging;
-	int m_contact;
-	bool m_facingRight;
 	BoxCollider m_colliderMain;
+	CircleCollider m_colliderCircle;
+	Sensor m_frontCheck;
+	Sensor m_hurtBox;
+
 	glm::vec2 m_spawnPos;
+	bool m_charging;
+	bool m_facingRight;
+	bool m_contact;
 };
 
 #endif /* ENTITIES_TESTANIMAL_H_ */
