@@ -97,6 +97,7 @@ int Game::run()
 	world.SetContactListener(&contacts);
 
 	PhotographSystem photo;
+	m_cameraScale = 1.0f;
 
 	Floor floorTest = Floor(m_pRenderer, m_pDebugRenderer);
 	floorTest.init(&world, glm::vec2(0.0f, 5.0f), m_pDebugRenderer);
@@ -107,7 +108,7 @@ int Game::run()
 	m_entities.push_back(&floorTest2);
 
 	Floor floorTest3 = Floor(m_pRenderer, m_pDebugRenderer);
-	floorTest3.init(&world, glm::vec2(16.0f, 6.0f), m_pDebugRenderer);
+	floorTest3.init(&world, glm::vec2(16.0f, 10.0f), m_pDebugRenderer);
 	m_entities.push_back(&floorTest3);
 
 	Floor floorTest4 = Floor(m_pRenderer, m_pDebugRenderer);
@@ -115,10 +116,10 @@ int Game::run()
 	m_entities.push_back(&floorTest4);
 
 	Player playerTest = Player(this, m_pRenderer, m_pDebugRenderer, &m_input, &photo);
-	playerTest.init(&world, glm::vec2(0.0f, 1.0f), m_pDebugRenderer);
+	playerTest.init(&world, glm::vec2(4.0f, 1.0f), m_pDebugRenderer);
 
 	Animal animalTest = Animal(m_pRenderer, m_pDebugRenderer, &playerTest);
-	animalTest.init(&world, glm::vec2(5.0f, 4.6f), m_pDebugRenderer, true);
+	animalTest.init(&world, glm::vec2(20.0f, 4.6f), m_pDebugRenderer, true);
 
 	m_entities.push_back(&animalTest);
 	m_entities.push_back(&playerTest);
@@ -148,12 +149,11 @@ int Game::run()
 			}
 
 		    world.Step(dt, velocityIterations, positionIterations);
-			m_pRenderer->setShadows(glm::vec2(), glm::vec2());
+		    m_pRenderer->setShadows(glm::vec2(), glm::vec2());
 		    for (Entity* e : m_entities)
 		    {
 		    	e->update(dt);
 		    }
-
 			m_input.clearKeys();
 		}
 
@@ -162,16 +162,14 @@ int Game::run()
         glClear(GL_COLOR_BUFFER_BIT);
 
         float percent = (accumulator / dt);
-                glm::vec2 position = playerTest.getPos();
-        m_cameraPos = glm::vec2(-position.x + m_width / 2, -position.y + m_height / 2);
 
         Texture2D texBack = ResourceManager::getTexture("background");
         m_pRenderer->drawSprite(texBack, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
-        		-m_cameraPos - glm::vec2(0.0f, 200.0f), glm::vec2(), glm::vec2(texBack.getWidth() * 0.7, texBack.getHeight() * 0.7));
+        		m_cameraPos - glm::vec2(0.0f, 200.0f), glm::vec2(), glm::vec2(texBack.getWidth() * 0.7, texBack.getHeight() * 0.7));
 
 	    for (Entity* e : m_entities)
 	    {
-	    	e->render(percent, m_cameraPos);
+	    	e->render(percent, -m_cameraPos, m_cameraScale);
 	    }
 		m_pRenderer->draw();
 		m_pDebugRenderer->draw();
@@ -185,4 +183,11 @@ int Game::run()
 void Game::exitGame()
 {
 	m_running = false;
+}
+
+void Game::setCamera(glm::vec2 c)
+{
+	m_cameraPos = c * m_cameraScale;
+	m_cameraPos.x -= m_width * 0.5;
+	m_cameraPos.y -= m_height * 0.5;
 }

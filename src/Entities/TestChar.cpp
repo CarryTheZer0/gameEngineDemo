@@ -32,6 +32,10 @@ void Player::update(float deltaTime)
 {
 	m_sprite.update(deltaTime);
 
+	float camScale = 1.0f;
+	glm::vec2 camPos = m_transform;
+	glm::vec2 mouseVec = glm::vec2();
+
 	if(!m_grounded && m_body.getBody()->GetLinearVelocity().y > 0)
 		{
 			m_sprite.playAnimation("fall", false);
@@ -74,8 +78,13 @@ void Player::update(float deltaTime)
 
 	if (m_pInput->isMouseHeld(GLFW_MOUSE_BUTTON_1) && m_grounded)
 	{
-		glm::vec2 direction = m_pInput->getMousePos() - m_pGame->getCamera() - m_transform + glm::vec2(0.0f, 70.0f);
-		glm::vec2 mouseVec = glm::normalize(direction);
+		camScale = 0.5f;
+
+		glm::vec2 direction = m_pInput->getMousePos() + m_pGame->getCamera() -
+				m_transform * camScale; // + glm::vec2(0.0f, 60.0f * camScale);
+
+		mouseVec = glm::normalize(direction);
+
 		float temp = glm::dot(glm::vec2(1.0f, 0.0f), mouseVec);
 		temp = glm::acos(temp);
 		temp = glm::degrees(temp);
@@ -92,12 +101,15 @@ void Player::update(float deltaTime)
 		}
 
 		m_spriteHead.setRotate(temp);
-		m_pRenderer->setShadows(m_pGame->getCamera() + m_transform + glm::vec2(0.0f, 60.0f),
+
+		m_pRenderer->setShadows(-m_pGame->getCamera() + m_transform * camScale, // - glm::vec2(0.0f, 60.0f * camScale),
 				glm::vec2(mouseVec.x, -mouseVec.y));
 		if(m_pInput->wasMousePressed(GLFW_MOUSE_BUTTON_2))
 		{
-			m_pPhoto->takePhoto(m_transform - glm::vec2(0.0f, 60.0f), mouseVec);
+			m_pPhoto->takePhoto(m_transform, mouseVec); // - glm::vec2(0.0f, 60.0f), mouseVec);
 		}
+	} else {
+		camScale = 1.0f;
 	}
 
 	if(m_facingRight)
@@ -117,19 +129,23 @@ void Player::update(float deltaTime)
 		m_body.getBody()->SetLinearVelocity(b2Vec2());
 		m_shouldReset = false;
 	}
+
+	m_pGame->setCameraScale(camScale);
+	m_pGame->setCamera(m_transform + mouseVec * camScale * 1000.0f);
+
 	m_body.update();
 }
 
-void Player::render(float percent, glm::vec2 camera)
+void Player::render(float percent, glm::vec2 camera, float scale)
 {
-	m_sprite.render(percent, camera);
-	m_colliderMain.render(percent, camera);
-	m_colliderCircle.render(percent, camera);
-	m_groundCheck.render(percent, camera);
-	m_leftCheck.render(percent, camera);
-	m_rightCheck.render(percent, camera);
+	m_sprite.render(percent, camera, scale);
+	m_colliderMain.render(percent, camera, scale);
+	m_colliderCircle.render(percent, camera, scale);
+	m_groundCheck.render(percent, camera, scale);
+	m_leftCheck.render(percent, camera, scale);
+	m_rightCheck.render(percent, camera, scale);
 	if (m_snap && m_grounded)
-		m_spriteHead.render(percent, camera);
+		m_spriteHead.render(percent, camera, scale);
 }
 
 void Player::jump(float xVel)

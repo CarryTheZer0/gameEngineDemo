@@ -26,11 +26,12 @@ Sprite::Sprite(Entity* pOwner, SpriteRenderer* pRenderer, const char* name,
 	m_offset.y -= m_texture.getHeight() * (srcRect.w - srcRect.y) / 2 * m_scale;
 }
 
-void Sprite::render(float percent, glm::vec2 camera)
+void Sprite::render(float percent, glm::vec2 camera, float scale)
 {
-	glm::vec2 pos = m_pOwner->getPos() + m_offset;
+	glm::vec2 pos = m_pOwner->getPos() * scale + m_offset * scale;
 	glm::vec2 size = glm::vec2((m_srcRect.z - m_srcRect.x) * m_texture.getWidth() * m_scale,
 			(m_srcRect.w - m_srcRect.y) * m_texture.getHeight() * m_scale);
+	size *= scale;
 	glm::vec4 srcRect = m_srcRect;
 	if (m_flipX)
 	{

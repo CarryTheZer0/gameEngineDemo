@@ -30,7 +30,7 @@ public:
 	~AnimatedSprite() = default;
 
 	void update(float deltaTime);
-	void render(float percent, glm::vec2 camera) override;
+	void render(float percent, glm::vec2 camera, float scale = 1.0f) override;
 
 	void setCurrentAnimation(const char* name);
 	void addAnimation(glm::vec4 origin, int frameCount, std::string name);

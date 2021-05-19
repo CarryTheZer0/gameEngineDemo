@@ -24,7 +24,7 @@ public:
 			glm::vec4 srcRect, glm::vec2 offset, float scale, glm::vec2 rotateOffset = glm::vec2());
 	virtual ~Sprite() = default;
 
-	virtual void render(float percent, glm::vec2 camera);
+	virtual void render(float percent, glm::vec2 camera, float scale = 1.0f);
 
 	virtual glm::vec2 getDimensions();
 

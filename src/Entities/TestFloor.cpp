@@ -20,10 +20,10 @@ void Floor::update(float deltaTime)
 	m_body.update();
 }
 
-void Floor::render(float percent, glm::vec2 camera)
+void Floor::render(float percent, glm::vec2 camera, float scale)
 {
-	m_sprite.render(percent, camera);
-	m_colliderMain.render(percent, camera);
+	m_sprite.render(percent, camera, scale);
+	m_colliderMain.render(percent, camera, scale);
 }
 
 void Floor::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug)

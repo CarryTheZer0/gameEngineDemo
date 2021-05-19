@@ -21,7 +21,7 @@ public:
 			b2Vec2 offset, float density, float friction);
 	~BoxCollider() = default;
 
-	void render(float percent, glm::vec2 camera);
+	void render(float percent, glm::vec2 camera, float scale = 1.0f);
 	void flipX();
 private:
 	DebugRenderer* m_pDebug;

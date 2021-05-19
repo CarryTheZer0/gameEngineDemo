@@ -28,26 +28,26 @@ BoxCollider::BoxCollider(Entity* pOwner, b2Body* pBody, DebugRenderer* pDebug, f
 	init(pBody, colliderDef);
 }
 
-void BoxCollider::render(float percent, glm::vec2 camera)
+void BoxCollider::render(float percent, glm::vec2 camera, float scale)
 {
 	b2PolygonShape* poly = dynamic_cast<b2PolygonShape*>(m_pFixture->GetShape());
 
 	b2Vec2 pos = m_pFixture->GetBody()->GetPosition();
-	float x = pos.x * 80;
-	float y = pos.y * 80;
+	float x = pos.x * 80 * scale;
+	float y = pos.y * 80 * scale;
 
 	for (int i = 0; i < m_vertexCount - 1; i++)
 	{
 		m_pDebug->drawLine(glm::vec2(
-			x + (poly->m_vertices[i].x * 80), y + (poly->m_vertices[i].y * 80)),
+			x + (poly->m_vertices[i].x * 80 * scale), y + (poly->m_vertices[i].y * 80 * scale)),
 				glm::vec2(
-			x + (poly->m_vertices[i + 1].x * 80), y + (poly->m_vertices[i + 1].y * 80)), camera);
+			x + (poly->m_vertices[i + 1].x * 80 * scale), y + (poly->m_vertices[i + 1].y * 80 * scale)), camera);
 	}
 
 	m_pDebug->drawLine(glm::vec2(
-		x + (poly->m_vertices[0].x * 80), y + (poly->m_vertices[0].y * 80)),
+		x + (poly->m_vertices[0].x * 80 * scale), y + (poly->m_vertices[0].y * 80 * scale)),
 			glm::vec2(
-		x + (poly->m_vertices[m_vertexCount - 1].x * 80), y + (poly->m_vertices[m_vertexCount - 1].y * 80)), camera);
+		x + (poly->m_vertices[m_vertexCount - 1].x * 80 * scale), y + (poly->m_vertices[m_vertexCount - 1].y * 80 * scale)), camera);
 }
 
 void BoxCollider::flipX()

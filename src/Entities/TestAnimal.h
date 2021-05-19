@@ -27,7 +27,7 @@ public:
 
 	void init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug, bool facingRight = false);
 	void update(float deltaTime) override;
-	void render(float percent, glm::vec2 camera) override;
+	void render(float percent, glm::vec2 camera, float scale) override;
 
 	void proc();
 	void charge();
