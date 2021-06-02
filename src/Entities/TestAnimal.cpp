@@ -59,13 +59,13 @@ void Animal::update(float deltaTime)
 	}
 }
 
-void Animal::render(float percent, glm::vec2 camera)
+void Animal::render(float percent, glm::vec2 camera, float scale)
 {
-	m_sprite.render(percent, camera);
-	m_colliderMain.render(percent, camera);
-	m_colliderCircle.render(percent, camera);
-	m_frontCheck.render(percent, camera);
-	m_hurtBox.render(percent, camera);
+	m_sprite.render(percent, camera, scale);
+	m_colliderMain.render(percent, camera, scale);
+	m_colliderCircle.render(percent, camera, scale);
+	m_frontCheck.render(percent, camera, scale);
+	m_hurtBox.render(percent, camera, scale);
 }
 
 void Animal::proc()

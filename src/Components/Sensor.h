@@ -28,7 +28,7 @@ public:
 	void invokeBegin();
 	void invokeEnd();
 
-	void render(float percent, glm::vec2 camera);
+	void render(float percent, glm::vec2 camera, float scale = 1.0f);
 	void flipX();
 
 	int getCollidingCount() { return m_collidingCount; }

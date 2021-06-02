@@ -15,7 +15,7 @@ void main()
 	vec2 fragMagnitude = vec2(gl_FragCoord.x, gl_FragCoord.y) - castOrigin;
 	float dotProd = dot(viewDirection, normalize(fragMagnitude));
 	
-	if (dotProd == 0.0 || (acos(dotProd) < 0.3 && pow(fragMagnitude.x, 2.0) + pow(fragMagnitude.y, 2.0) > 1600.0))
+	if (dotProd == 0.0 || (acos(dotProd) <= 0.3 && pow(fragMagnitude.x, 2.0) + pow(fragMagnitude.y, 2.0) > 1600.0))
 	{
 		// keep in colour
 		shadowColor == vec4(spriteColor, 1.0) * texture(images[index], texCoords);

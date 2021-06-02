@@ -14,6 +14,7 @@
 class SpriteRenderer;
 class DebugRenderer;
 class Entity;
+class Camera;
 
 class Game
 {
@@ -27,8 +28,11 @@ public:
 	int run();
 	void exitGame();
 
-	glm::vec2 getCamera() { return m_cameraPos; }
-	void setCamera(glm::vec2 c) { m_cameraPos = c; }
+	Camera* getCamera() { return m_pCamera; }
+	void setCamera(glm::vec2 c);
+
+	int getWidth() { return m_width; }
+	int getHeight() { return m_height; }
 private:
 	SpriteRenderer* m_pRenderer;
 	DebugRenderer* m_pDebugRenderer;
@@ -38,7 +42,7 @@ private:
 	int m_height;
 	GLFWwindow* m_pWindow;
 	InputHandler m_input;
-	glm::vec2 m_cameraPos;
+	Camera* m_pCamera;
 
 	std::vector<Entity*> m_entities;
 };

@@ -37,15 +37,16 @@ void AnimatedSprite::update(float deltaTime)
 	}
 }
 
-void AnimatedSprite::render(float percent, glm::vec2 camera)
+void AnimatedSprite::render(float percent, glm::vec2 camera, float scale)
 {
-	glm::vec2 pos = m_pOwner->getPos() + m_animations[m_currentAnimation].offset;
+	glm::vec2 pos = m_pOwner->getPos() * scale + m_animations[m_currentAnimation].offset * scale;
 
 	glm::vec4 srcRect = m_animations[m_currentAnimation].origin;
 	float width = (srcRect.z - srcRect.x);
 	srcRect.x += width * m_frame;
 	srcRect.z += width * m_frame;
 	glm::vec2 size = glm::vec2((srcRect.z - srcRect.x) * m_texture.getWidth() * m_scale, (srcRect.w - srcRect.y) * m_texture.getHeight() * m_scale);
+	size *= scale;
 	float rotate = glm::degrees(m_pOwner->getComponent<Body>()->getBody()->GetAngle());
 	if (m_flipX)
 	{
