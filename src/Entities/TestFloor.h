@@ -25,6 +25,7 @@ public:
 
 	void init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug);
 	void update(float deltaTime) override;
+	void camUpdate() override {}
 	void render(float percent, glm::vec2 camera, float scale) override;
 private:
 	Sprite m_sprite;

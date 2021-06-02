@@ -6,6 +6,7 @@
  */
 
 #include <functional>
+#include <cmath>
 
 #include "TestChar.h"
 
@@ -31,10 +32,6 @@ Player::Player(Game* pGame, SpriteRenderer* pRenderer, DebugRenderer* pDebug, In
 void Player::update(float deltaTime)
 {
 	m_sprite.update(deltaTime);
-
-	float camScale = 1.0f;
-	glm::vec2 camPos = m_transform;
-	glm::vec2 mouseVec = glm::vec2();
 
 	if(!m_grounded && m_body.getBody()->GetLinearVelocity().y > 0)
 		{
@@ -63,8 +60,7 @@ void Player::update(float deltaTime)
 	else if (m_grounded)
 	{
 		m_body.getBody()->SetLinearVelocity(b2Vec2(-0.0f, y));
-		m_sprite.playAnimation("snap", false);
-		m_snap = true;
+		m_sprite.playAnimation("idle", false);
 	}
 	else if (!m_pInput->isKeyHeld(GLFW_KEY_D) && !m_pInput->isKeyHeld(GLFW_KEY_A))
 	{
@@ -78,19 +74,21 @@ void Player::update(float deltaTime)
 
 	if (m_pInput->isMouseHeld(GLFW_MOUSE_BUTTON_1) && m_grounded)
 	{
-		camScale = 0.5f;
+		m_snap = true;
+		float camScale = m_pGame->getCamera()->getScale();
+		glm::vec2 mouseDirection;
 
-		glm::vec2 direction = m_pInput->getMousePos() + m_pGame->getCamera() -
-				m_transform * camScale; // + glm::vec2(0.0f, 60.0f * camScale);
+		glm::vec2 mouseVector = m_pInput->getMousePos() + m_pGame->getCamera()->getPos() -
+				m_transform * camScale + glm::vec2(0.0f, 60.0f * camScale);
 
-		mouseVec = glm::normalize(direction);
+		mouseDirection = glm::normalize(mouseVector);
 
-		float temp = glm::dot(glm::vec2(1.0f, 0.0f), mouseVec);
+		float temp = glm::dot(glm::vec2(1.0f, 0.0f), mouseDirection);
 		temp = glm::acos(temp);
 		temp = glm::degrees(temp);
-		if (mouseVec.y < 0) temp *= -1;
+		if (mouseDirection.y < 0) temp *= -1;
 
-		if (mouseVec.x < 0)
+		if (mouseDirection.x < 0)
 		{
 			m_facingRight = false;
 			temp += 180;
@@ -102,14 +100,14 @@ void Player::update(float deltaTime)
 
 		m_spriteHead.setRotate(temp);
 
-		m_pRenderer->setShadows(-m_pGame->getCamera() + m_transform * camScale, // - glm::vec2(0.0f, 60.0f * camScale),
-				glm::vec2(mouseVec.x, -mouseVec.y));
 		if(m_pInput->wasMousePressed(GLFW_MOUSE_BUTTON_2))
 		{
-			m_pPhoto->takePhoto(m_transform, mouseVec); // - glm::vec2(0.0f, 60.0f), mouseVec);
+			m_pPhoto->takePhoto(m_transform - glm::vec2(0.0f, 60.0f), mouseDirection);
 		}
-	} else {
-		camScale = 1.0f;
+	}
+	else
+	{
+		m_snap = false;
 	}
 
 	if(m_facingRight)
@@ -130,10 +128,36 @@ void Player::update(float deltaTime)
 		m_shouldReset = false;
 	}
 
-	m_pGame->setCameraScale(camScale);
-	m_pGame->setCamera(m_transform + mouseVec * camScale * 1000.0f);
-
 	m_body.update();
+}
+
+void Player::camUpdate()
+{
+	if (m_snap)
+	{
+		glm::vec2 mouseVector = m_pInput->getMousePos() + m_pGame->getCamera()->getPos() -
+				m_transform * m_pGame->getCamera()->getScale() + glm::vec2(0.0f, 60.0f * m_pGame->getCamera()->getScale());
+
+		float test = m_pGame->getCamera()->getScale();
+
+		glm::vec2 mouseDirection = glm::normalize(mouseVector);
+
+		glm::vec2 shadowOrigin;
+
+		shadowOrigin.x = -m_pGame->getCamera()->getPos().x + m_transform.x * m_pGame->getCamera()->getScale();
+		shadowOrigin.y = m_pGame->getCamera()->getPos().y - m_transform.y * m_pGame->getCamera()->getScale() + 768.0f;
+
+		m_pRenderer->setShadows(shadowOrigin + glm::vec2(0.0f, 60.0f * m_pGame->getCamera()->getScale()),
+				glm::vec2(mouseDirection.x, -mouseDirection.y));
+
+		m_pGame->getCamera()->setTargetScale(0.5f);
+		m_pGame->getCamera()->setTargetPos(m_transform + mouseVector * 0.8f);
+	}
+	else
+	{
+		m_pGame->getCamera()->setScale(1.0f);
+		m_pGame->getCamera()->setPos(m_transform);
+	}
 }
 
 void Player::render(float percent, glm::vec2 camera, float scale)
@@ -168,6 +192,7 @@ void Player::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug)
 	addComponent(&m_colliderMain);
 	addComponent(&m_colliderCircle);
 	m_sprite.addAnimation(glm::vec4(0.0f, 0.0f, 0.2f, 0.33f), 4, "run");
+	m_sprite.addAnimation(glm::vec4(0.8f, 0.0f, 1.0f, 0.33f), 1, "idle");
 	m_sprite.addAnimation(glm::vec4(0.8f, 0.0f, 1.0f, 0.33f), 1, "snap");
 	m_sprite.addAnimation(glm::vec4(0.0f, 0.33f, 0.2f, 0.66f), 4, "jump");
 	m_sprite.addAnimation(glm::vec4(0.0f, 0.66f, 0.2f, 1.0f), 1, "fall");
@@ -209,13 +234,13 @@ void Player::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug)
 	m_groundCheck.getFixture()->SetFilterData(sensorFilter);
 
 	m_rightCheck = Sensor(this, m_body.getBody(), pDebug,
-			0.1f, yExtent * 0.9f, b2Vec2(xExtent, 0.0f), &m_rightCheck);
+			0.1f, yExtent * 0.95f, b2Vec2(xExtent, -yExtent * 0.05), &m_rightCheck);
 	m_rightCheck.initBegin(std::bind(&Player::contactEdge, this, true));
 	m_rightCheck.initEnd(std::bind(&Player::endContactEdge, this));
 	m_rightCheck.getFixture()->SetFilterData(sensorFilter);
 
 	m_leftCheck = Sensor(this, m_body.getBody(), pDebug,
-			0.1f, yExtent * 0.9f, b2Vec2(-xExtent, 0.0f), &m_leftCheck);
+			0.1f, yExtent * 0.95f, b2Vec2(-xExtent, -yExtent * 0.05), &m_leftCheck);
 	m_leftCheck.initBegin(std::bind(&Player::contactEdge, this, false));
 	m_leftCheck.initEnd(std::bind(&Player::endContactEdge, this));
 	m_leftCheck.getFixture()->SetFilterData(sensorFilter);

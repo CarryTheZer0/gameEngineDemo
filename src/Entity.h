@@ -21,6 +21,7 @@ public:
 	virtual ~Entity() = default;
 
 	virtual void update(float deltaTime) = 0;
+	virtual void camUpdate() = 0;
 	virtual void render(float percent, glm::vec2 camera = glm::vec2(), float scale = 1.0f) = 0;
 
 	glm::vec2 getPos() { return m_transform; }

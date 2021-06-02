@@ -16,6 +16,7 @@
 #include "../Components/BoxCollider.h"
 #include "../Components/CircleCollider.h"
 #include "../Components/Sensor.h"
+#include "../Camera.h"
 
 class InputHandler;
 class SpriteRenderer;
@@ -31,6 +32,7 @@ public:
 
 	void init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug);
 	void update(float deltaTime) override;
+	void camUpdate() override;
 	void render(float percent, glm::vec2 camera, float scale) override;
 
 	void jump(float xVel);
