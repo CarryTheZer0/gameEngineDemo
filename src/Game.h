@@ -30,6 +30,9 @@ public:
 
 	Camera* getCamera() { return m_pCamera; }
 	void setCamera(glm::vec2 c);
+
+	int getWidth() { return m_width; }
+	int getHeight() { return m_height; }
 private:
 	SpriteRenderer* m_pRenderer;
 	DebugRenderer* m_pDebugRenderer;

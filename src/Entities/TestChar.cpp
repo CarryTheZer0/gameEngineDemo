@@ -135,7 +135,15 @@ void Player::camUpdate()
 {
 	if (m_snap)
 	{
-		glm::vec2 mouseVector = m_pInput->getMousePos() + m_pGame->getCamera()->getPos() -
+
+		glm::vec2 mousePos = m_pInput->getMousePos();
+
+		if (mousePos.x > m_pGame->getWidth()) mousePos.x = m_pGame->getWidth();
+		if (mousePos.x < 0) mousePos.x = 0;
+		if (mousePos.y > m_pGame->getHeight()) mousePos.y = m_pGame->getHeight();
+		if (mousePos.y < 0) mousePos.y = 0;
+
+		glm::vec2 mouseVector = mousePos + m_pGame->getCamera()->getPos() -
 				m_transform * m_pGame->getCamera()->getScale() + glm::vec2(0.0f, 60.0f * m_pGame->getCamera()->getScale());
 
 		float test = m_pGame->getCamera()->getScale();
