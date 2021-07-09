@@ -10,7 +10,7 @@
 
 #include <vector>
 
-#include "Entities/TestAnimal.h"
+#include "Entities/Charger.h"
 
 class Player;
 
@@ -18,10 +18,13 @@ class PhotographSystem
 {
 public:
 	void takePhoto(glm::vec2 pos, glm::vec2 dir);
-	void addEntity(Animal* a) { m_animals.push_back(a); }
+	void addEntity(Entity* a) { m_targets.push_back(a); }
+
+	std::vector<glm::vec2> computeCorners(Entity* ent);
+	glm::vec2 projectPointOnVector(glm::vec2 point, glm::vec2 vec);
 private:
 	Player* m_pPlayer;
-	std::vector<Animal*> m_animals;
+	std::vector<Entity*> m_targets;
 };
 
 #endif /* PHOTOGRAPHSYSTEM_H_ */

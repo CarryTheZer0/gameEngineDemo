@@ -24,6 +24,11 @@ class DebugRenderer;
 class Game;
 class PhotographSystem;
 
+enum CharState
+{
+	idle, run, freefall, photo
+};
+
 class Player : public Entity
 {
 public:
@@ -35,18 +40,21 @@ public:
 	void camUpdate() override;
 	void render(float percent, glm::vec2 camera, float scale) override;
 
-	void jump(float xVel);
+	void jump(float yForce = 300.0f);
 	void reset();
+	void flipX(bool facingRight);
+	void takePhoto();
 
-	void contactFloor();
-	void endContactFloor();
-	void contactEdge(bool right);
-	void endContactEdge();
+	void contactFloor(Fixture* contact);
+	void endContactFloor(Fixture* contact);
+	void contactEdge(Fixture* contact, bool right);
+	void endContactEdge(Fixture* contact, bool right);
 private:
 	SpriteRenderer* m_pRenderer;
 	InputHandler* m_pInput;
 	Game* m_pGame;
 	PhotographSystem* m_pPhoto;
+
 	AnimatedSprite m_sprite;
 	Sprite m_spriteHead;
 	Body m_body;
@@ -55,11 +63,16 @@ private:
 	Sensor m_groundCheck;
 	Sensor m_leftCheck;
 	Sensor m_rightCheck;
+
 	bool m_grounded;
 	bool m_snap;
 	bool m_facingRight;
 	bool m_shouldReset;
-	int m_contact;
+	int m_contactRight;
+	int m_contactLeft;
+
+	glm::vec2 m_mouseVector;
+	glm::vec2 m_lookDirection;
 };
 
 #endif /* ENTITIES_TESTCHAR_H_ */

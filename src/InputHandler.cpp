@@ -9,14 +9,13 @@
 #include <GLFW/glfw3.h>
 #include "InputHandler.h"
 
-
 InputHandler::InputHandler(GLFWwindow* pWindow) :
 	m_pWindow(pWindow)
 {}
 
 void InputHandler::keyCallback(int key, int scancode, int action, int mods)
 {
-    if (action == GLFW_PRESS || action == GLFW_REPEAT)
+    if (action == GLFW_PRESS)
         onKeyPressed(key);
     else if (action == GLFW_RELEASE)
     	onKeyReleased(key);
@@ -24,7 +23,7 @@ void InputHandler::keyCallback(int key, int scancode, int action, int mods)
 
 void InputHandler::mouseCallback(int button, int action, int mods)
 {
-    if (action == GLFW_PRESS || action == GLFW_REPEAT)
+    if (action == GLFW_PRESS)
         onMousePressed(button);
     else if (action == GLFW_RELEASE)
     	onMouseReleased(button);

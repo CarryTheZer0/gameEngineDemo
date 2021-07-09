@@ -9,7 +9,7 @@
 #include "../Entity.h"
 #include "../DebugRenderer.h"
 
-void dummy() {}
+void dummy(Fixture* contact) {}
 
 Sensor::Sensor(Entity* pOwner, b2Body* pBody, DebugRenderer* pDebug, float xExtent, float yExtent,
 		b2Vec2 offset, Sensor* pointer, glm::vec3 debugColor) :
@@ -31,9 +31,8 @@ Sensor::Sensor(Entity* pOwner, b2Body* pBody, DebugRenderer* pDebug, float xExte
 	b2FixtureDef def;
 	def.shape = &box;
 	def.isSensor = true;
-	def.userData.pointer = reinterpret_cast<uintptr_t>(pointer);
 
-	init(pBody, def);
+	init(pBody, def, pointer);
 }
 
 void Sensor::render(float percent, glm::vec2 camera, float scale)
@@ -70,27 +69,27 @@ void Sensor::flipX()
 	m_offset.x *= -1;
 }
 
-void Sensor::initBegin(std::function<void()> func)
+void Sensor::initBegin(std::function<void(Fixture* contact)> func)
 {
 	m_f_invokeBegin = func;
 }
 
-void Sensor::initEnd(std::function<void()> func)
+void Sensor::initEnd(std::function<void(Fixture* contact)> func)
 {
 	m_f_invokeEnd = func;
 }
 
-void Sensor::invokeBegin()
+void Sensor::invokeBegin(Fixture* contact)
 {
 	m_collidingCount++;
 	m_debugColorCurrent = glm::vec3(0.0f, 1.0f, 0.0f);
-	m_f_invokeBegin();
+	m_f_invokeBegin(contact);
 }
 
-void Sensor::invokeEnd()
+void Sensor::invokeEnd(Fixture* contact)
 {
 	m_collidingCount--;
 	if (!m_collidingCount)
 		m_debugColorCurrent = m_debugColor;
-	m_f_invokeEnd();
+	m_f_invokeEnd(contact);
 }

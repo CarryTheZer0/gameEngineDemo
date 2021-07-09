@@ -23,10 +23,10 @@ public:
 			b2Vec2 offset, Sensor* pointer, glm::vec3 debugColor = glm::vec3(1.0f, 1.0f, 0.0f));
 	~Sensor() = default;
 
-	void initBegin(std::function<void()> func);
-	void initEnd(std::function<void()> func);
-	void invokeBegin();
-	void invokeEnd();
+	void initBegin(std::function<void(Fixture* contact)> func);
+	void initEnd(std::function<void(Fixture* contact)> func);
+	void invokeBegin(Fixture* contact);
+	void invokeEnd(Fixture* contact);
 
 	void render(float percent, glm::vec2 camera, float scale = 1.0f);
 	void flipX();
@@ -42,8 +42,8 @@ private:
 	glm::vec3 m_debugColor;
 	glm::vec3 m_debugColorCurrent;
 
-	std::function<void()> m_f_invokeBegin;
-	std::function<void()> m_f_invokeEnd;
+	std::function<void(Fixture* contact)> m_f_invokeBegin;
+	std::function<void(Fixture* contact)> m_f_invokeEnd;
 };
 
 #endif /* COMPONENTS_SENSOR_H_ */

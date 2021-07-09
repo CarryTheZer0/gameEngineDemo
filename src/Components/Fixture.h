@@ -22,7 +22,7 @@ public:
 	virtual ~Fixture() = default;
 
 	void update();
-	void init(b2Body* pBody, b2FixtureDef def);
+	void init(b2Body* pBody, b2FixtureDef def, Fixture* fix);
 
 	b2Fixture* getFixture();
 protected:
