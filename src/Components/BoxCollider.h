@@ -18,7 +18,7 @@ class BoxCollider : public Fixture
 public:
 	BoxCollider() = default;
 	BoxCollider(Entity* pOwner, b2Body* pBody, DebugRenderer* pDebug, float xExtent, float yExtent,
-			b2Vec2 offset, float density, float friction);
+			b2Vec2 offset, float density, float friction, Fixture* pointer);
 	~BoxCollider() = default;
 
 	void render(float percent, glm::vec2 camera, float scale = 1.0f);

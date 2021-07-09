@@ -1,24 +1,17 @@
 /*
- * TestAnimal.cpp
+ * Charger.cpp
  *
  *  Created on: 23 Apr 2021
  *      Author: mchlp
  */
 
-/*
- * TestChar.cpp
- *
- *  Created on: 6 Apr 2021
- *      Author: mchlp
- */
-
-#include "TestAnimal.h"
+#include "Charger.h"
 
 #include "../SpriteRenderer.h"
 #include "../DebugRenderer.h"
 #include "testChar.h"
 
-Animal::Animal(SpriteRenderer* pRenderer, DebugRenderer* pDebug, Player* pPlayer) :
+Charger::Charger(SpriteRenderer* pRenderer, DebugRenderer* pDebug, Player* pPlayer) :
 	m_sprite(this, pRenderer, "animal", glm::vec4(0.0f, 0.0f, 0.25f, 1.0f), 0.2f, 0.3f),
 	m_pPlayer(pPlayer),
 	m_pRenderer(pRenderer),
@@ -26,7 +19,7 @@ Animal::Animal(SpriteRenderer* pRenderer, DebugRenderer* pDebug, Player* pPlayer
 	m_facingRight(true)
 {}
 
-void Animal::update(float deltaTime)
+void Charger::update(float deltaTime)
 {
 	m_body.update();
 	m_sprite.update(deltaTime);
@@ -59,7 +52,7 @@ void Animal::update(float deltaTime)
 	}
 }
 
-void Animal::render(float percent, glm::vec2 camera, float scale)
+void Charger::render(float percent, glm::vec2 camera, float scale)
 {
 	m_sprite.render(percent, camera, scale);
 	m_colliderMain.render(percent, camera, scale);
@@ -68,7 +61,7 @@ void Animal::render(float percent, glm::vec2 camera, float scale)
 	m_hurtBox.render(percent, camera, scale);
 }
 
-void Animal::proc()
+void Charger::proc()
 {
 	if (m_facingRight)
 	{
@@ -80,7 +73,7 @@ void Animal::proc()
 	}
 }
 
-void Animal::charge()
+void Charger::charge()
 {
 	float y = m_body.getBody()->GetLinearVelocity().y;
 	if (m_facingRight && m_contact)
@@ -106,7 +99,7 @@ void Animal::charge()
 	}
 }
 
-void Animal::setFacingRight(bool facingRight)
+void Charger::setFacingRight(bool facingRight)
 {
 	m_sprite.flipX(facingRight);
 	if (facingRight != m_facingRight)
@@ -119,7 +112,7 @@ void Animal::setFacingRight(bool facingRight)
 	m_facingRight = facingRight;
 }
 
-void Animal::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug, bool facingRight)
+void Charger::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug, bool facingRight)
 {
 	addComponent(&m_sprite);
 	addComponent(&m_body);
@@ -150,11 +143,12 @@ void Animal::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug, bool fa
 	float yExtent = m_sprite.getDimensions().y / 80.0f / 3.9f;
 
 	m_colliderMain = BoxCollider(this, m_body.getBody(), pDebug,
-			xExtent - (yExtent / 2), yExtent * 0.95, b2Vec2(-yExtent / 2, 0.0f), 1.33f, 0.3f);
+			xExtent - (yExtent / 2), yExtent * 0.95, b2Vec2(-yExtent / 2, 0.0f), 1.33f, 0.3f,
+			&m_colliderMain);
 	m_colliderMain.getFixture()->SetFilterData(animalFilter);
 
 	m_colliderCircle = CircleCollider(this, m_body.getBody(), pDebug, yExtent, b2Vec2(xExtent - yExtent, 0.0f),
-			1.33f / 2.0f, 0.3f);
+			1.33f / 2.0f, 0.3f, &m_colliderCircle);
 	m_colliderCircle.getFixture()->SetFilterData(animalFilter);
 
 	b2Filter sensorFilter;
@@ -164,8 +158,8 @@ void Animal::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug, bool fa
 
 	m_frontCheck = Sensor(this, m_body.getBody(), pDebug,
 			0.1f, yExtent * 0.9, b2Vec2(xExtent, 0.0f), &m_frontCheck);
-	m_frontCheck.initBegin(std::bind(&Animal::contactEdge, this));
-	m_frontCheck.initEnd(std::bind(&Animal::endContactEdge, this));
+	m_frontCheck.initBegin(std::bind(&Charger::contactEdge, this, std::placeholders::_1));
+	m_frontCheck.initEnd(std::bind(&Charger::endContactEdge, this, std::placeholders::_1));
 	m_frontCheck.getFixture()->SetFilterData(sensorFilter);
 
 	b2Filter hurtFilter;
@@ -181,12 +175,12 @@ void Animal::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug, bool fa
 	setFacingRight(facingRight);
 }
 
-void Animal::contactEdge()
+void Charger::contactEdge(Fixture* contact)
 {
 	m_contact = true;
 }
 
-void Animal::endContactEdge()
+void Charger::endContactEdge(Fixture* contact)
 {
-	m_contact = 0;
+	m_contact = false;
 }

@@ -15,8 +15,9 @@ Fixture::Fixture(Entity* pOwner) :
 void Fixture::update()
 {}
 
-void Fixture::init(b2Body* pBody, b2FixtureDef def)
+void Fixture::init(b2Body* pBody, b2FixtureDef def, Fixture* fix)
 {
+	def.userData.pointer = reinterpret_cast<uintptr_t>(fix);
 	m_pFixture = pBody->CreateFixture(&def);
 }
 

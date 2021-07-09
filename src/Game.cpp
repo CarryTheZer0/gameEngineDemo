@@ -16,10 +16,12 @@
 #include "ContactListener.h"
 #include "PhotographSystem.h"
 #include "Camera.h"
+#include "Environment.h"
 
 #include "Entities/TestChar.h"
 #include "Entities/TestFloor.h"
-#include "Entities/TestAnimal.h"
+#include "Entities/Charger.h"
+#include "Entities/MushroomMonster.h"
 
 Game::Game() :
 		m_running(true),
@@ -62,7 +64,8 @@ void Game::init()
     // load textures
     ResourceManager::loadTexture("textures/Spritesheet.png", true, "run");
     ResourceManager::loadTexture("textures/SpritesheetAnimal.png", true, "animal");
-    ResourceManager::loadTexture("textures/platformsketch.png", true, "dplan");
+    ResourceManager::loadTexture("textures/platformsketch.png", true, "platform");
+    ResourceManager::loadTexture("textures/dplan.png", true, "dplan");
     ResourceManager::loadTexture("textures/sketchBackground.png", true, "background");
 
     glfwSetWindowUserPointer( m_pWindow, &m_input );
@@ -97,36 +100,47 @@ int Game::run()
 	ContactListener contacts;
 	world.SetContactListener(&contacts);
 
+	Environment env = Environment(&world, m_pDebugRenderer);
+
 	PhotographSystem photo;
 	Camera mainCamera = Camera(m_width, m_height);
 	m_pCamera = &mainCamera;
 
-	Floor floorTest = Floor(m_pRenderer, m_pDebugRenderer);
-	floorTest.init(&world, glm::vec2(0.0f, 5.0f), m_pDebugRenderer);
-	m_entities.push_back(&floorTest);
-
-	Floor floorTest2 = Floor(m_pRenderer, m_pDebugRenderer);
-	floorTest2.init(&world, glm::vec2(8.0f, 6.0f), m_pDebugRenderer);
-	m_entities.push_back(&floorTest2);
-
-	Floor floorTest3 = Floor(m_pRenderer, m_pDebugRenderer);
-	floorTest3.init(&world, glm::vec2(16.0f, 5.0f), m_pDebugRenderer);
-	m_entities.push_back(&floorTest3);
-
-	Floor floorTest4 = Floor(m_pRenderer, m_pDebugRenderer);
-	floorTest4.init(&world, glm::vec2(24.0f, 8.0f), m_pDebugRenderer);
-	m_entities.push_back(&floorTest4);
+//	Floor floorTest = Floor(m_pRenderer, m_pDebugRenderer);
+//	floorTest.init(&world, glm::vec2(0.0f, 5.0f), m_pDebugRenderer);
+//	m_entities.push_back(&floorTest);
+//
+//	Floor floorTest2 = Floor(m_pRenderer, m_pDebugRenderer);
+//	floorTest2.init(&world, glm::vec2(8.0f, 6.0f), m_pDebugRenderer);
+//	m_entities.push_back(&floorTest2);
+//
+//	Floor floorTest4 = Floor(m_pRenderer, m_pDebugRenderer);
+//	floorTest4.init(&world, glm::vec2(24.0f, 8.0f), m_pDebugRenderer);
+//	m_entities.push_back(&floorTest4);
+//
+//	Floor floorTest5 = Floor(m_pRenderer, m_pDebugRenderer);
+//	floorTest5.init(&world, glm::vec2(16.0f, 9.0f), m_pDebugRenderer);
+//	m_entities.push_back(&floorTest5);
 
 	Player playerTest = Player(this, m_pRenderer, m_pDebugRenderer, &m_input, &photo);
-	playerTest.init(&world, glm::vec2(0.0f, 1.0f), m_pDebugRenderer);
+	playerTest.init(&world, glm::vec2(5.0f, 1.0f), m_pDebugRenderer);
 
-	Animal animalTest = Animal(m_pRenderer, m_pDebugRenderer, &playerTest);
-	animalTest.init(&world, glm::vec2(20.0f, 4.6f), m_pDebugRenderer, true);
+	Charger animalTest = Charger(m_pRenderer, m_pDebugRenderer, &playerTest);
+	animalTest.init(&world, glm::vec2(12.0f, 9.0f), m_pDebugRenderer, true);
+
+	MushroomMonster animal2 = MushroomMonster(m_pRenderer, m_pDebugRenderer);
+	animal2.init(&world, glm::vec2(8.0f, 9.0f), m_pDebugRenderer, true);
+
+	MushroomMonster animal3 = MushroomMonster(m_pRenderer, m_pDebugRenderer);
+	animal3.init(&world, glm::vec2(17.0f, 9.0f), m_pDebugRenderer, false);
 
 	m_entities.push_back(&animalTest);
 	m_entities.push_back(&playerTest);
+	m_entities.push_back(&animal2);
+	m_entities.push_back(&animal3);
 
 	photo.addEntity(&animalTest);
+	photo.addEntity(&animal2);
 
 	int32 velocityIterations = 6;
 	int32 positionIterations = 2;
@@ -181,7 +195,9 @@ int Game::run()
 	    	e->render(percent, -m_pCamera->getPos(), m_pCamera->getScale());
 	    }
 		m_pRenderer->draw();
-		//m_pDebugRenderer->draw();
+
+		m_pDebugRenderer->draw();
+		env.render(m_pCamera->getPos(), m_pCamera->getScale());
 
 		glfwSwapBuffers(m_pWindow);
 	}

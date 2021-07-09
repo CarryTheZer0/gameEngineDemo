@@ -10,8 +10,8 @@
 #include "../DebugRenderer.h"
 
 BoxCollider::BoxCollider(Entity* pOwner, b2Body* pBody, DebugRenderer* pDebug, float xExtent, float yExtent,
-		b2Vec2 offset, float density, float friction) :
-	Fixture(),
+		b2Vec2 offset, float density, float friction, Fixture* pointer) :
+	Fixture(pOwner),
 	m_pDebug(pDebug),
 	m_xExtent(xExtent),
 	m_yExtent(yExtent),
@@ -25,7 +25,7 @@ BoxCollider::BoxCollider(Entity* pOwner, b2Body* pBody, DebugRenderer* pDebug, f
 	colliderDef.density = density;
 	colliderDef.friction = friction;
 
-	init(pBody, colliderDef);
+	init(pBody, colliderDef, pointer);
 }
 
 void BoxCollider::render(float percent, glm::vec2 camera, float scale)

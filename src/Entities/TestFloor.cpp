@@ -12,7 +12,7 @@
 #include "../InputHandler.h"
 
 Floor::Floor(SpriteRenderer* pRenderer,  DebugRenderer* pDebug) :
-	m_sprite(this, pRenderer, "dplan", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), glm::vec2(), 0.8f)
+	m_sprite(this, pRenderer, "platform", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), glm::vec2(), 0.8f)
 {}
 
 void Floor::update(float deltaTime)
@@ -38,6 +38,6 @@ void Floor::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug)
 
 	m_colliderMain = BoxCollider(this, m_body.getBody(), pDebug,
 			m_sprite.getDimensions().x / 80.0f /  2.2f, m_sprite.getDimensions().y / 80.0f /  5.3f,
-			b2Vec2(), 0.0f, 0.3f);
+			b2Vec2(), 0.0f, 0.3f, &m_colliderMain);
 	m_colliderMain.getFixture()->SetFilterData(terrainFilter);
 }

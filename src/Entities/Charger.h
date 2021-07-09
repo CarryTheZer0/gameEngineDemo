@@ -1,12 +1,12 @@
 /*
- * testAnimal.h
+ * Charger.h
  *
  *  Created on: 23 Apr 2021
  *      Author: mchlp
  */
 
-#ifndef ENTITIES_TESTANIMAL_H_
-#define ENTITIES_TESTANIMAL_H_
+#ifndef ENTITIES_CHARGER_H_
+#define ENTITIES_CHARGER_H_
 
 #include "../Entity.h"
 #include "../Components/AnimatedSprite.h"
@@ -19,11 +19,11 @@ class SpriteRenderer;
 class DebugRenderer;
 class Player;
 
-class Animal : public Entity
+class Charger : public Entity
 {
 public:
-	Animal(SpriteRenderer* pRenderer, DebugRenderer* pDebug, Player* pPlayer);
-	~Animal() = default;
+	Charger(SpriteRenderer* pRenderer, DebugRenderer* pDebug, Player* pPlayer);
+	~Charger() = default;
 
 	void init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug, bool facingRight = false);
 	void update(float deltaTime) override;
@@ -34,8 +34,8 @@ public:
 	void charge();
 	void setFacingRight(bool facing);
 
-	void contactEdge();
-	void endContactEdge();
+	void contactEdge(Fixture* contact);
+	void endContactEdge(Fixture* contact);
 private:
 	SpriteRenderer* m_pRenderer;
 	Player* m_pPlayer;
@@ -53,4 +53,4 @@ private:
 	bool m_contact;
 };
 
-#endif /* ENTITIES_TESTANIMAL_H_ */
+#endif /* ENTITIES_CHARGER_H_ */
