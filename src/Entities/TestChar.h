@@ -21,6 +21,7 @@
 class InputHandler;
 class SpriteRenderer;
 class DebugRenderer;
+class GameplayScene;
 class Game;
 class PhotographSystem;
 
@@ -32,7 +33,7 @@ enum CharState
 class Player : public Entity
 {
 public:
-	Player(Game* pGame, SpriteRenderer* pRenderer, DebugRenderer* pDebug, InputHandler* pInput, PhotographSystem* pPhoto);
+	Player(Game* pGame, GameplayScene* pScene, SpriteRenderer* pRenderer, DebugRenderer* pDebug, InputHandler* pInput, PhotographSystem* pPhoto);
 	~Player() = default;
 
 	void init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug);
@@ -52,6 +53,7 @@ public:
 private:
 	SpriteRenderer* m_pRenderer;
 	InputHandler* m_pInput;
+	GameplayScene* m_pScene;
 	Game* m_pGame;
 	PhotographSystem* m_pPhoto;
 
