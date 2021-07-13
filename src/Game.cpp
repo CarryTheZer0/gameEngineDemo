@@ -92,14 +92,9 @@ void Game::init()
     // TODO maybe not use dynamically allocated scenes
     GameplayScene* sc1 = new GameplayScene(
     		&m_input, m_pRenderer, m_pDebugRenderer, this, &m_sceneManager, "test");
-    GameplayScene* sc2 = new GameplayScene(
-    		&m_input, m_pRenderer, m_pDebugRenderer, this, &m_sceneManager, "test2");
 
     unsigned int sc1ID = m_sceneManager.addScene(sc1);
-    unsigned int sc2ID = m_sceneManager.addScene(sc2);
-
-    sc2->addSceneLink(glm::vec2(-4.5f, 1.5f), 0.5f, 2.5f, sc1ID);
-    sc1->addSceneLink(glm::vec2(-4.5f, 1.5f), 0.5f, 2.5f, sc2ID);
+    sc1->startScene();
 }
 
 int Game::run()
@@ -216,6 +211,7 @@ int Game::run()
 //		env.render(m_pCamera->getPos(), m_pCamera->getScale());
 
         m_sceneManager.getCurrentScene()->render(percent);
+        m_sceneManager.clean();
 
 		glfwSwapBuffers(m_pWindow);
 	}

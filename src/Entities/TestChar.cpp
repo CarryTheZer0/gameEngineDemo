@@ -28,7 +28,9 @@ Player::Player(Game* pGame, GameplayScene* pScene, SpriteRenderer* pRenderer, De
 	m_grounded(true),
 	m_facingRight(true),
 	m_shouldReset(false),
-	m_snap(false)
+	m_snap(false),
+	m_contactLeft(0),
+	m_contactRight(0)
 {}
 
 void Player::update(float deltaTime)
@@ -223,6 +225,10 @@ void Player::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug)
 	m_sprite.addAnimation(glm::vec4(0.0f, 0.33f, 0.2f, 0.66f), 4, "jump");
 	m_sprite.addAnimation(glm::vec4(0.0f, 0.66f, 0.2f, 1.0f), 1, "fall");
 	m_sprite.playAnimation("run");
+
+	m_transform = glm::vec2(pos.x * 80, pos.y * 80);
+	m_pScene->getCamera().setScale(1.0f);
+	m_pScene->getCamera().setPos(m_transform);
 
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;

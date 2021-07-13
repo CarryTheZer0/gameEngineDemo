@@ -1,12 +1,12 @@
 /*
- * Charger.h
+ * MushroomMonster.h
  *
- *  Created on: 23 Apr 2021
+ *  Created on: 7 Jun 2021
  *      Author: mchlp
  */
 
-#ifndef ENTITIES_CHARGER_H_
-#define ENTITIES_CHARGER_H_
+#ifndef ENTITIES_MUSHROOMMONSTER_H_
+#define ENTITIES_MUSHROOMMONSTER_H_
 
 #include "../Entity.h"
 #include "../Components/AnimatedSprite.h"
@@ -19,37 +19,47 @@ class SpriteRenderer;
 class DebugRenderer;
 class Player;
 
-class Charger : public Entity
+class MushroomMonster : public Entity
 {
 public:
-	Charger(SpriteRenderer* pRenderer, DebugRenderer* pDebug, Player* pPlayer);
-	~Charger() = default;
+	MushroomMonster(SpriteRenderer* pRenderer, DebugRenderer* pDebug);
+	~MushroomMonster() = default;
 
 	void init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug, bool facingRight = false);
 	void update(float deltaTime) override;
 	void camUpdate() override {}
 	void render(float percent, glm::vec2 camera, float scale) override;
 
-	void proc();
-	void charge();
-	void setFacingRight(bool facing);
+	void flipX();
+
+	void idle();
+	void walk();
+	void graze();
 
 	void contactEdge(Fixture* contact);
 	void endContactEdge(Fixture* contact);
+
+	void contactJump(Fixture* contact);
+	void endContactJump(Fixture* contact);
 private:
 	SpriteRenderer* m_pRenderer;
-	Player* m_pPlayer;
 
 	AnimatedSprite m_sprite;
 	Body m_body;
 	BoxCollider m_colliderMain;
 	CircleCollider m_colliderCircle;
 	Sensor m_frontCheck;
-	Sensor m_hurtBox;
+	Sensor m_colliderJump;
 
-	bool m_charging;
 	bool m_facingRight;
 	bool m_contact;
+
+	float m_timeElapsed;
+
+	enum State {IDLE, WALK, GRAZE};
+	State m_state;
+
+	Player* m_jumpTarget;
 };
 
-#endif /* ENTITIES_CHARGER_H_ */
+#endif /* ENTITIES_MUSHROOMMONSTER_H_ */

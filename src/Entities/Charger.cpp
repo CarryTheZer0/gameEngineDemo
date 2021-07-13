@@ -15,7 +15,6 @@ Charger::Charger(SpriteRenderer* pRenderer, DebugRenderer* pDebug, Player* pPlay
 	m_sprite(this, pRenderer, "animal", glm::vec4(0.0f, 0.0f, 0.25f, 1.0f), 0.2f, 0.3f),
 	m_pPlayer(pPlayer),
 	m_pRenderer(pRenderer),
-	m_spawnPos(),
 	m_facingRight(true)
 {}
 
@@ -127,7 +126,7 @@ void Charger::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug, bool f
 	m_sprite.addAnimation(glm::vec4(0.5f, 0.0f, 0.75f, 1.0f), 1, "idle");
 	m_sprite.playAnimation("idle");
 
-	m_spawnPos = glm::vec2(pos.x * 80, pos.y * 80);
+	m_transform = glm::vec2(pos.x * 80, pos.y * 80);
 
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
