@@ -10,6 +10,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "InputHandler.h"
+#include "SceneManager.h"
 
 class SpriteRenderer;
 class DebugRenderer;
@@ -36,6 +37,7 @@ public:
 private:
 	SpriteRenderer* m_pRenderer;
 	DebugRenderer* m_pDebugRenderer;
+	SceneManager m_sceneManager;
 
 	bool m_running;
 	int m_width;

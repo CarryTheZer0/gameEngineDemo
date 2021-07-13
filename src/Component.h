@@ -15,6 +15,7 @@ class Component
 public:
 	Component() = default;
 	Component(Entity* owner) : m_pOwner(owner) {}
+	virtual ~Component() = default;
 
 	virtual Entity* getOwner() { return m_pOwner; }
 protected:

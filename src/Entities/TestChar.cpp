@@ -15,18 +15,22 @@
 #include "../InputHandler.h"
 #include "../PhotographSystem.h"
 #include "../Game.h"
+#include "../GameplayScene.h"
 
-Player::Player(Game* pGame, SpriteRenderer* pRenderer, DebugRenderer* pDebug, InputHandler* pInput, PhotographSystem* pPhoto) :
+Player::Player(Game* pGame, GameplayScene* pScene, SpriteRenderer* pRenderer, DebugRenderer* pDebug, InputHandler* pInput, PhotographSystem* pPhoto) :
 	m_sprite(this, pRenderer, "run", glm::vec4(0.0f, 0.0f, 0.2f, 1.0f), 0.2f, 0.2f),
 	m_spriteHead(this, pRenderer, "run", glm::vec4(0.8f, 0.33f, 1.0f, 0.66f), glm::vec2(), 0.2f, glm::vec2(0.0f, -0.3f)),
 	m_pRenderer(pRenderer),
 	m_pGame(pGame),
+	m_pScene(pScene),
 	m_pInput(pInput),
 	m_pPhoto(pPhoto),
 	m_grounded(true),
 	m_facingRight(true),
 	m_shouldReset(false),
-	m_snap(false)
+	m_snap(false),
+	m_contactLeft(0),
+	m_contactRight(0)
 {}
 
 void Player::update(float deltaTime)
@@ -123,19 +127,19 @@ void Player::camUpdate()
 		glm::vec2 shadowOrigin;
 
 		// TODO dont know why y component is offset and reversed - maybe box2d and openGL use opposite directions for y
-		shadowOrigin.x = -m_pGame->getCamera()->getPos().x + m_transform.x * m_pGame->getCamera()->getScale();
-		shadowOrigin.y = m_pGame->getCamera()->getPos().y - m_transform.y * m_pGame->getCamera()->getScale() + 768.0f;
+		shadowOrigin.x = -m_pScene->getCamera().getPos().x + m_transform.x * m_pScene->getCamera().getScale();
+		shadowOrigin.y = m_pScene->getCamera().getPos().y - m_transform.y * m_pScene->getCamera().getScale() + 768.0f;
 
-		m_pRenderer->setShadows(shadowOrigin + glm::vec2(0.0f, 60.0f * m_pGame->getCamera()->getScale()),
+		m_pRenderer->setShadows(shadowOrigin + glm::vec2(0.0f, 60.0f * m_pScene->getCamera().getScale()),
 				glm::vec2(m_lookDirection.x, -m_lookDirection.y));
 
-		m_pGame->getCamera()->setTargetScale(0.7f);
-		m_pGame->getCamera()->setTargetPos(m_transform + m_mouseVector * 0.8f);
+		m_pScene->getCamera().setTargetScale(0.7f);
+		m_pScene->getCamera().setTargetPos(m_transform + m_mouseVector * 0.8f);
 	}
 	else
 	{
-		m_pGame->getCamera()->setScale(1.0f);
-		m_pGame->getCamera()->setPos(m_transform);
+		m_pScene->getCamera().setScale(1.0f);
+		m_pScene->getCamera().setPos(m_transform);
 	}
 }
 
@@ -172,7 +176,7 @@ void Player::flipX(bool facingRight)
 
 void Player::takePhoto()
 {
-	float camScale = m_pGame->getCamera()->getScale();
+	float camScale = m_pScene->getCamera().getScale();
 	glm::vec2 mousePos = m_pInput->getMousePos();
 
 	if (mousePos.x > m_pGame->getWidth()) mousePos.x = m_pGame->getWidth();
@@ -180,7 +184,7 @@ void Player::takePhoto()
 	if (mousePos.y > m_pGame->getHeight()) mousePos.y = m_pGame->getHeight();
 	if (mousePos.y < 0) mousePos.y = 0;
 
-	m_mouseVector = mousePos + m_pGame->getCamera()->getPos() -
+	m_mouseVector = mousePos + m_pScene->getCamera().getPos() -
 			m_transform * camScale + glm::vec2(0.0f, 60.0f * camScale);
 
 	m_lookDirection = glm::normalize(m_mouseVector);
@@ -221,6 +225,10 @@ void Player::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug)
 	m_sprite.addAnimation(glm::vec4(0.0f, 0.33f, 0.2f, 0.66f), 4, "jump");
 	m_sprite.addAnimation(glm::vec4(0.0f, 0.66f, 0.2f, 1.0f), 1, "fall");
 	m_sprite.playAnimation("run");
+
+	m_transform = glm::vec2(pos.x * 80, pos.y * 80);
+	m_pScene->getCamera().setScale(1.0f);
+	m_pScene->getCamera().setPos(m_transform);
 
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
