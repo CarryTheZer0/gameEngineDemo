@@ -20,7 +20,7 @@ public:
 	Environment(b2World* pWorld, DebugRenderer* pDebug);
 	~Environment() = default;
 
-	void init(const char* filename);
+	void init(std::string filename);
 
 	void render(glm::vec2 camera, float scale);
 

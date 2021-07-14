@@ -51,9 +51,7 @@ public:
 	void contactEdge(Fixture* contact, bool right);
 	void endContactEdge(Fixture* contact, bool right);
 private:
-	SpriteRenderer* m_pRenderer;
 	InputHandler* m_pInput;
-	GameplayScene* m_pScene;
 	Game* m_pGame;
 	PhotographSystem* m_pPhoto;
 

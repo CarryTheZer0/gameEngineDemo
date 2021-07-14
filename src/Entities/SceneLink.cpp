@@ -7,9 +7,10 @@
 
 #include "SceneLink.h"
 #include "../SceneManager.h"
-#include "../Scene.h"
+#include "../GameplayScene.h"
 
-SceneLink::SceneLink(SceneManager* pSceneManager, Scene* pParentScene) :
+SceneLink::SceneLink(SceneManager* pSceneManager, GameplayScene* pParentScene) :
+	Entity(pParentScene, nullptr, nullptr),
 	m_pSceneManager(pSceneManager),
 	m_pParentScene(pParentScene),
 	m_triggered(false),

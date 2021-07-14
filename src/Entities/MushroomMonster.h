@@ -22,7 +22,7 @@ class Player;
 class MushroomMonster : public Entity
 {
 public:
-	MushroomMonster(SpriteRenderer* pRenderer, DebugRenderer* pDebug);
+	MushroomMonster(GameplayScene* pParentScene, SpriteRenderer* pRenderer, DebugRenderer* pDebug);
 	~MushroomMonster() = default;
 
 	void init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug, bool facingRight = false);
@@ -42,8 +42,6 @@ public:
 	void contactJump(Fixture* contact);
 	void endContactJump(Fixture* contact);
 private:
-	SpriteRenderer* m_pRenderer;
-
 	AnimatedSprite m_sprite;
 	Body m_body;
 	BoxCollider m_colliderMain;

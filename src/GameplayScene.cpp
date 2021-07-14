@@ -37,14 +37,15 @@ GameplayScene::GameplayScene(InputHandler* pInput, SpriteRenderer* pRenderer, De
 	// temp code TODO make init method & load data from file
 	Player* playerTest = new Player(pGame, this, m_pRenderer, m_pDebug, m_pInput, &m_photo);
 	playerTest->init(m_pWorld, glm::vec2(5.0f, 1.0f), m_pDebug);
+	m_pPlayer = playerTest;
 
-	Charger* animalTest = new Charger(m_pRenderer, m_pDebug, playerTest);
+	Charger* animalTest = new Charger(this, m_pRenderer, m_pDebug);
 	animalTest->init(m_pWorld, glm::vec2(12.0f, 9.0f), m_pDebug, true);
 
-	MushroomMonster* animal2 = new MushroomMonster(m_pRenderer, m_pDebug);
+	MushroomMonster* animal2 = new MushroomMonster(this, m_pRenderer, m_pDebug);
 	animal2->init(m_pWorld, glm::vec2(8.0f, 9.0f), m_pDebug, true);
 
-	MushroomMonster* animal3 = new MushroomMonster(m_pRenderer, m_pDebug);
+	MushroomMonster* animal3 = new MushroomMonster(this, m_pRenderer, m_pDebug);
 	animal3->init(m_pWorld, glm::vec2(17.0f, 9.0f), m_pDebug, false);
 
 	addSceneLink(glm::vec2(-4.5f, 1.5f), 0.5f, 2.5f, "next");
@@ -69,7 +70,7 @@ GameplayScene::~GameplayScene()
 
 void GameplayScene::loadScene()
 {
-	m_env.init();
+	m_env.init(m_filename);
 }
 
 void GameplayScene::saveScene() {}
@@ -77,7 +78,7 @@ void GameplayScene::saveScene() {}
 void GameplayScene::startScene()
 {
     GameplayScene* nextScene = new GameplayScene(
-    		m_pInput, m_pRenderer, m_pDebug, m_pGame, m_pSceneManager, "test");
+    		m_pInput, m_pRenderer, m_pDebug, m_pGame, m_pSceneManager, "level2");
     unsigned int sceneID = m_pSceneManager->addScene(nextScene);
 
     linkTo("next", sceneID);

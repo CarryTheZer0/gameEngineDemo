@@ -12,9 +12,9 @@
 #include "../DebugRenderer.h"
 #include "testChar.h"
 
-MushroomMonster::MushroomMonster(SpriteRenderer* pRenderer, DebugRenderer* pDebug) :
+MushroomMonster::MushroomMonster(GameplayScene* pParentScene, SpriteRenderer* pRenderer, DebugRenderer* pDebug) :
+	Entity(pParentScene, pRenderer, pDebug),
 	m_sprite(this, pRenderer, "animal", glm::vec4(0.0f, 0.0f, 0.25f, 1.0f), 0.2f, 0.3f),
-	m_pRenderer(pRenderer),
 	m_facingRight(true)
 {}
 

@@ -46,6 +46,7 @@ public:
 	void setSpawnPoint(glm::vec2 spawn);
 	void onEntityRemoved() { m_entityRemoved = true; }
 
+	Player* getPlayer() { return m_pPlayer; }
 private:
 	Camera m_camera;
 	glm::vec2 m_spawnPoint;
@@ -53,6 +54,7 @@ private:
 	Environment m_env;
 	PhotographSystem m_photo;
 	ContactListener m_contacts;
+	Player* m_pPlayer;
 
 	std::string m_filename;
 

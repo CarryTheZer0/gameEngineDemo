@@ -91,7 +91,7 @@ void Game::init()
 
     // TODO maybe not use dynamically allocated scenes
     GameplayScene* sc1 = new GameplayScene(
-    		&m_input, m_pRenderer, m_pDebugRenderer, this, &m_sceneManager, "test");
+    		&m_input, m_pRenderer, m_pDebugRenderer, this, &m_sceneManager, "level1");
 
     unsigned int sc1ID = m_sceneManager.addScene(sc1);
     sc1->startScene();
