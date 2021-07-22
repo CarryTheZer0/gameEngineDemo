@@ -14,9 +14,10 @@
 #include <glm/glm.hpp>
 #include "Component.h"
 
-#include "GameplayScene.h"
 #include "SpriteRenderer.h"
 #include "DebugRenderer.h"
+
+class GameplayScene;
 
 class Entity
 {
@@ -50,12 +51,6 @@ protected:
 	SpriteRenderer* m_pRenderer;
 	DebugRenderer* m_pDebug;
 };
-
-Entity::Entity(GameplayScene* pParentScene, SpriteRenderer* pRenderer, DebugRenderer* pDebug) :
-	m_pParentScene(pParentScene),
-	m_pRenderer(pRenderer),
-	m_pDebug(pDebug)
-{}
 
 template <class CompType>
 CompType* Entity::getComponent()

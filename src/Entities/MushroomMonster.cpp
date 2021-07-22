@@ -14,8 +14,9 @@
 
 MushroomMonster::MushroomMonster(GameplayScene* pParentScene, SpriteRenderer* pRenderer, DebugRenderer* pDebug) :
 	Entity(pParentScene, pRenderer, pDebug),
-	m_sprite(this, pRenderer, "animal", glm::vec4(0.0f, 0.0f, 0.25f, 1.0f), 0.2f, 0.3f),
-	m_facingRight(true)
+	m_sprite(this, pRenderer, "mush", glm::vec4(0.0f, 0.0f, 0.125f, 1.0f), 0.2f, 0.45f),
+	m_facingRight(true),
+	m_contact(false)
 {}
 
 void MushroomMonster::update(float deltaTime)
@@ -113,7 +114,7 @@ void MushroomMonster::walk()
 
 void MushroomMonster::graze()
 {
-	m_sprite.playAnimation("graze");
+	m_sprite.playAnimation("graze", false);
 	m_body.getBody()->SetLinearVelocity(b2Vec2(0.0f, m_body.getBody()->GetLinearVelocity().y));
 
 	if (m_timeElapsed > 2.0f)
@@ -134,9 +135,9 @@ void MushroomMonster::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug
 	addComponent(&m_colliderJump);
 	addComponent(&m_colliderCircle);
 
-	m_sprite.addAnimation(glm::vec4(0.0f, 0.0f, 0.25f, 1.0f), 4, "run");
-	m_sprite.addAnimation(glm::vec4(0.5f, 0.0f, 0.75f, 1.0f), 1, "idle");
-	m_sprite.addAnimation(glm::vec4(0.0f, 0.0f, 0.25f, 1.0f), 4, "graze");
+	m_sprite.addAnimation(glm::vec4(0.875f, 0.0f, 1.0f, 1.0f), 1, "run");
+	m_sprite.addAnimation(glm::vec4(0.875f, 0.0f, 1.0f, 1.0f), 1, "idle");
+	m_sprite.addAnimation(glm::vec4(0.0f, 0.0f, 0.125f, 1.0f), 8, "graze");
 	m_sprite.playAnimation("idle");
 
 	m_transform = glm::vec2(pos.x * 80, pos.y * 80);
@@ -152,7 +153,7 @@ void MushroomMonster::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug
 	animalFilter.maskBits = 0x0001;  // terrain
 
 	float xExtent = m_sprite.getDimensions().x / 80.0f / 3.0f;
-	float yExtent = m_sprite.getDimensions().y / 80.0f / 3.9f;
+	float yExtent = m_sprite.getDimensions().y / 80.0f / 3.3f;
 
 	m_colliderMain = BoxCollider(this, m_body.getBody(), pDebug,
 			xExtent - (yExtent / 2), yExtent * 0.95, b2Vec2(-yExtent / 2, 0.0f), 1.33f, 0.3f,
@@ -180,7 +181,7 @@ void MushroomMonster::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug
 	sensorFilterJump.maskBits = 0x0002; // player
 
 	m_colliderJump = Sensor(this, m_body.getBody(), pDebug,
-			xExtent * 0.9, 0.1f, b2Vec2(0.0f, -yExtent), &m_colliderJump);
+			xExtent * 0.6, 0.1f, b2Vec2(0.0f, -yExtent), &m_colliderJump);
 	m_colliderJump.initBegin(std::bind(&MushroomMonster::contactJump, this, std::placeholders::_1));
 	m_colliderJump.initEnd(std::bind(&MushroomMonster::endContactJump, this, std::placeholders::_1));
 	m_colliderJump.getFixture()->SetFilterData(sensorFilterJump);

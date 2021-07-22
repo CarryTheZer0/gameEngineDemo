@@ -11,6 +11,8 @@
 #include <vector>
 
 #include <Box2d/Box2d.h>
+#include "tinyxml2.h"
+
 #include "DebugRenderer.h"
 
 class Environment
@@ -20,7 +22,7 @@ public:
 	Environment(b2World* pWorld, DebugRenderer* pDebug);
 	~Environment() = default;
 
-	void init(std::string filename);
+	void init(tinyxml2::XMLElement* pLevel);
 
 	void render(glm::vec2 camera, float scale);
 

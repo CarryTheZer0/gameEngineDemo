@@ -7,22 +7,13 @@
 
 #include "Environment.h"
 
-#include <assert.h>
-
-#include "tinyxml2.h"
-
 Environment::Environment(b2World* pWorld, DebugRenderer* pDebug) :
 	m_pWorld(pWorld),
 	m_pDebug(pDebug)
 {}
 
-void Environment::init(std::string filename)
+void Environment::init(tinyxml2::XMLElement* pLevel)
 {
-	tinyxml2::XMLDocument doc;
-	filename = "Resources/Data/" + filename + ".xml";
-	assert(doc.LoadFile(filename.c_str()) == 0 && "No xml specification found!");
-
-	tinyxml2::XMLElement* pLevel = doc.FirstChildElement("level");
 	tinyxml2::XMLElement* pNode = pLevel->FirstChildElement("node");
 
 	while (pNode)

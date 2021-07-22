@@ -7,6 +7,9 @@
 
 #include "GameplayScene.h"
 
+#include "tinyxml2.h"
+#include <assert.h>
+
 #include "Entity.h"
 #include "SpriteRenderer.h"
 #include "DebugRenderer.h"
@@ -21,11 +24,15 @@
 #include "Entities/MushroomMonster.h"
 #include "Entities/SceneLink.h"
 
+#include "Spawner.h"
+
 GameplayScene::GameplayScene(InputHandler* pInput, SpriteRenderer* pRenderer, DebugRenderer* pDebug,
 		Game* pGame, SceneManager* pSceneManager, const char* filename) :
 	Scene(pInput, pRenderer, pDebug, pGame, pSceneManager),
 	m_filename(filename),
-	m_entityRemoved(false)
+	m_entityRemoved(false),
+	m_parentGame(pGame),
+	m_pPlayer(nullptr)
 {
 	b2Vec2 gravity(0.0f, 10.0f);
 	m_pWorld = new b2World(gravity);
@@ -33,30 +40,6 @@ GameplayScene::GameplayScene(InputHandler* pInput, SpriteRenderer* pRenderer, De
 	m_camera = Camera(pGame->getWidth(), pGame->getHeight());
 
 	m_pWorld->SetContactListener(&m_contacts);
-
-	// temp code TODO make init method & load data from file
-	Player* playerTest = new Player(pGame, this, m_pRenderer, m_pDebug, m_pInput, &m_photo);
-	playerTest->init(m_pWorld, glm::vec2(5.0f, 1.0f), m_pDebug);
-	m_pPlayer = playerTest;
-
-	Charger* animalTest = new Charger(this, m_pRenderer, m_pDebug);
-	animalTest->init(m_pWorld, glm::vec2(12.0f, 9.0f), m_pDebug, true);
-
-	MushroomMonster* animal2 = new MushroomMonster(this, m_pRenderer, m_pDebug);
-	animal2->init(m_pWorld, glm::vec2(8.0f, 9.0f), m_pDebug, true);
-
-	MushroomMonster* animal3 = new MushroomMonster(this, m_pRenderer, m_pDebug);
-	animal3->init(m_pWorld, glm::vec2(17.0f, 9.0f), m_pDebug, false);
-
-	addSceneLink(glm::vec2(-4.5f, 1.5f), 0.5f, 2.5f, "next");
-
-	m_entities.emplace_back(playerTest);
-	m_entities.emplace_back(animalTest);
-	m_entities.emplace_back(animal2);
-	m_entities.emplace_back(animal3);
-
-	m_photo.addEntity(animalTest);
-	m_photo.addEntity(animal2);
 }
 
 GameplayScene::~GameplayScene()
@@ -70,18 +53,106 @@ GameplayScene::~GameplayScene()
 
 void GameplayScene::loadScene()
 {
-	m_env.init(m_filename);
+	// load xml file
+	tinyxml2::XMLDocument doc;
+	std::string filename = "Resources/Data/" + m_filename + ".xml";
+	assert(doc.LoadFile(filename.c_str()) == 0 && "No xml specification found!");
+	tinyxml2::XMLElement* pScene = doc.FirstChildElement("scene");
+
+	// load level terrain data
+	tinyxml2::XMLElement* pLevel = pScene->FirstChildElement("level");
+	m_env.init(pLevel);
+
+	tinyxml2::XMLElement* pSceneMax = pLevel->FirstChildElement("sceneMax");
+	float x, y;
+	pSceneMax->QueryFloatAttribute("x", &x);
+	pSceneMax->QueryFloatAttribute("y", &y);
+	m_camera.setMax(glm::vec2(x * 80.0f, y * 80.0f));
+
+	tinyxml2::XMLElement* pSceneMin = pLevel->FirstChildElement("sceneMin");
+	pSceneMin->QueryFloatAttribute("x", &x);
+	pSceneMin->QueryFloatAttribute("y", &y);
+	m_camera.setMin(glm::vec2(x * 80.0f, y * 80.0f));
+
+	// load player
+	tinyxml2::XMLElement* pPlayer = pScene->FirstChildElement("player");
+	pPlayer->QueryFloatAttribute("x", &x);
+	pPlayer->QueryFloatAttribute("y", &y);
+	Player* player = new Player(m_parentGame, this, m_pRenderer, m_pDebug, m_pInput, &m_photo);
+	player->init(m_pWorld, glm::vec2(x, y), m_pDebug);
+	m_pPlayer = player;
+	m_entities.emplace_back(player);
+
+	// load entities
+	tinyxml2::XMLElement* pEntities = pScene->FirstChildElement("entities");
+	tinyxml2::XMLElement* pEntity = pEntities->FirstChildElement("entity");
+
+	while (pEntity)
+	{
+		bool facingRight;
+		const char* name;
+		pEntity->QueryFloatAttribute("x", &x);
+		pEntity->QueryFloatAttribute("y", &y);
+		pEntity->QueryBoolAttribute("facingRight", &facingRight);
+		pEntity->QueryStringAttribute("name", &name);
+
+		Entity* ent = Spawner::spawnEntity(name, glm::vec2(x, y), facingRight,
+				this, m_pRenderer, m_pDebug, m_pWorld);
+		if (ent)
+			m_entities.emplace_back(ent);
+
+		pEntity = pEntity->NextSiblingElement("entity");
+	}
+
+	// load scene links
+	tinyxml2::XMLElement* pSceneLinks = pScene->FirstChildElement("sceneLinks");
+	tinyxml2::XMLElement* pSceneLink = pSceneLinks->FirstChildElement("sceneLink");
+
+	while (pSceneLink)
+	{
+		float x, y, w, h;
+		const char* name;
+		pSceneLink->QueryFloatAttribute("x", &x);
+		pSceneLink->QueryFloatAttribute("y", &y);
+		pSceneLink->QueryFloatAttribute("halfWidth", &w);
+		pSceneLink->QueryFloatAttribute("halfHeight", &h);
+		pSceneLink->QueryStringAttribute("linkName", &name);
+
+		addSceneLink(glm::vec2(x, y), w, h, name);
+
+		pSceneLink = pSceneLink->NextSiblingElement("sceneLink");
+	}
 }
 
 void GameplayScene::saveScene() {}
 
 void GameplayScene::startScene()
 {
-    GameplayScene* nextScene = new GameplayScene(
-    		m_pInput, m_pRenderer, m_pDebug, m_pGame, m_pSceneManager, "level2");
-    unsigned int sceneID = m_pSceneManager->addScene(nextScene);
+	// load file
+	tinyxml2::XMLDocument doc;
+	std::string filename = "Resources/Data/" + m_filename + ".xml";
+	assert(doc.LoadFile(filename.c_str()) == 0 && "No xml specification found!");
 
-    linkTo("next", sceneID);
+	tinyxml2::XMLElement* pScene = doc.FirstChildElement("scene");
+	tinyxml2::XMLElement* pSceneLinks = pScene->FirstChildElement("sceneLinks");
+	tinyxml2::XMLElement* pSceneLink = pSceneLinks->FirstChildElement("sceneLink");
+
+	// initialise and link adjacent scenes
+	while (pSceneLink)
+	{
+		const char* linkName;
+		const char* fileName;
+		pSceneLink->QueryStringAttribute("linkName", &linkName);
+		pSceneLink->QueryStringAttribute("fileName", &fileName);
+
+	    GameplayScene* nextScene = new GameplayScene(
+	    		m_pInput, m_pRenderer, m_pDebug, m_pGame, m_pSceneManager, fileName);
+	    unsigned int sceneID = m_pSceneManager->addScene(nextScene);
+
+	    linkTo(linkName, sceneID);
+
+		pSceneLink = pSceneLink->NextSiblingElement("sceneLink");
+	}
 }
 
 void GameplayScene::stopScene() {}
@@ -98,7 +169,8 @@ void GameplayScene::addSceneLink(glm::vec2 pos, float xExtent, float yExtent, co
 void GameplayScene::linkTo(const char* name, unsigned int target)
 {
 	SceneLink* pLink = m_sceneMap[name];
-	pLink->setTarget(target);
+	if (pLink)
+		pLink->setTarget(target);
 }
 
 void GameplayScene::update(float deltaTime)
@@ -119,6 +191,7 @@ void GameplayScene::update(float deltaTime)
     {
     	e->camUpdate();
     }
+	m_camera.clamp();
 }
 
 void GameplayScene::render(float percent)
@@ -138,9 +211,13 @@ void GameplayScene::render(float percent)
 	m_pDebug->draw();
 }
 
-void GameplayScene::addEntity(Entity* pObject) {}
+void GameplayScene::addEntity(Entity* pObject)
+{
+	m_entities.emplace_back(pObject);
+	if (true)
+		m_photo.addEntity(pObject);
+}
 
 void GameplayScene::setSpawnPoint(glm::vec2 spawn) {}
 
 void GameplayScene::loadMap(const char* filepath) {}
-

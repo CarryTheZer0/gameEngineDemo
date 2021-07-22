@@ -11,6 +11,7 @@
 #include "Scene.h"
 #include <Box2d/Box2d.h>
 #include <glm/glm.hpp>
+#include <unordered_map>
 
 #include "Camera.h"
 #include "Environment.h"
@@ -26,7 +27,7 @@ public:
 	GameplayScene() = delete;
 	GameplayScene(InputHandler* pInput, SpriteRenderer* pRenderer, DebugRenderer* pDebug,
 			Game* pGame, SceneManager* pSceneManager, const char* filename);
-	~GameplayScene();
+	virtual ~GameplayScene();
 
 	void loadScene() override;
 	void saveScene() override;
@@ -47,7 +48,7 @@ public:
 	void onEntityRemoved() { m_entityRemoved = true; }
 
 	Player* getPlayer() { return m_pPlayer; }
-private:
+protected:
 	Camera m_camera;
 	glm::vec2 m_spawnPoint;
 	b2World* m_pWorld;
@@ -55,6 +56,7 @@ private:
 	PhotographSystem m_photo;
 	ContactListener m_contacts;
 	Player* m_pPlayer;
+	Game* m_parentGame;
 
 	std::string m_filename;
 
@@ -62,7 +64,6 @@ private:
 	std::vector<Entity*> m_entities;
 
 	std::unordered_map<std::string, SceneLink*> m_sceneMap;
-	unsigned int m_nextScene;
 
 	void loadMap(const char* filepath);
 };

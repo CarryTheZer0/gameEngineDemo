@@ -11,7 +11,9 @@ Camera::Camera(float screenWidth, float screenHeight) :
 	m_screenWidth(screenWidth),
 	m_screenHeight(screenHeight),
 	m_scale(1.0f),
-	m_scaleTarget(1.0f)
+	m_scaleTarget(1.0f),
+	m_sceneMin(0.0f, 0.0f),
+	m_sceneMax(screenWidth, screenHeight)
 {}
 
 void Camera::setTargetPos(glm::vec2 pos)
@@ -43,4 +45,12 @@ void Camera::update(float deltaTime)
 
 	m_pos *= newScale/m_scale;
 	m_scale = newScale;
+}
+
+void Camera::clamp()
+{
+	if (m_pos.x - m_screenWidth / 2 < m_sceneMin.x) m_pos.x = m_sceneMin.x + m_screenWidth / 2;
+	if (m_pos.y - m_screenHeight / 2 < m_sceneMin.y) m_pos.y = m_sceneMin.y + m_screenHeight / 2;
+	if (m_pos.x + m_screenWidth / 2 > m_sceneMax.x) m_pos.x = m_sceneMax.x - m_screenWidth / 2;
+	if (m_pos.y + m_screenHeight / 2 > m_sceneMax.y) m_pos.y = m_sceneMax.y - m_screenHeight / 2;
 }
