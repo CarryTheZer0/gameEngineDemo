@@ -14,10 +14,16 @@
 #include <glm/glm.hpp>
 #include "Component.h"
 
+#include "SpriteRenderer.h"
+#include "DebugRenderer.h"
+
+class GameplayScene;
+
 class Entity
 {
 public:
-	Entity() = default;
+	Entity() = delete;
+	Entity(GameplayScene* pParentScene, SpriteRenderer* pRenderer, DebugRenderer* pDebug);
 	virtual ~Entity() = default;
 
 	virtual void update(float deltaTime) = 0;
@@ -40,6 +46,10 @@ public:
 protected:
 	std::vector<Component*> m_components;
 	glm::vec2 m_transform;
+
+	GameplayScene* m_pParentScene;
+	SpriteRenderer* m_pRenderer;
+	DebugRenderer* m_pDebug;
 };
 
 template <class CompType>

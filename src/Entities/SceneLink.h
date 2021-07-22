@@ -14,13 +14,13 @@
 
 class DebugRenderer;
 class SceneManager;
-class Scene;
+class GameplayScene;
 
 class SceneLink : public Entity
 {
 public:
 	SceneLink() = delete;
-	SceneLink(SceneManager* pSceneManager, Scene* pParentScene);
+	SceneLink(SceneManager* pSceneManager, GameplayScene* pParentScene);
 	~SceneLink() = default;
 
 	void init(b2World* pWorld, glm::vec2 pos, float xExtent, float yExtent,
@@ -36,7 +36,7 @@ private:
 	Body m_body;
 	SceneManager* m_pSceneManager;
 	unsigned int m_nextScene;
-	Scene* m_pParentScene;
+	GameplayScene* m_pParentScene;
 
 	bool m_triggered;
 

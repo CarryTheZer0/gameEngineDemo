@@ -10,12 +10,14 @@
 #include "../SpriteRenderer.h"
 #include "../DebugRenderer.h"
 #include "testChar.h"
+#include "../GameplayScene.h"
 
-Charger::Charger(SpriteRenderer* pRenderer, DebugRenderer* pDebug, Player* pPlayer) :
+Charger::Charger(GameplayScene* pParentScene, SpriteRenderer* pRenderer, DebugRenderer* pDebug) :
+	Entity(pParentScene, pRenderer, pDebug),
 	m_sprite(this, pRenderer, "animal", glm::vec4(0.0f, 0.0f, 0.25f, 1.0f), 0.2f, 0.3f),
-	m_pPlayer(pPlayer),
-	m_pRenderer(pRenderer),
-	m_facingRight(true)
+	m_facingRight(true),
+	m_charging(false),
+	m_contact(false)
 {}
 
 void Charger::update(float deltaTime)
@@ -34,7 +36,7 @@ void Charger::update(float deltaTime)
 	b2RayCastOutput o;
 	int32 childIndex = 0;
 
-	std::vector<Fixture*> pColliders = m_pPlayer->getComponents<Fixture>();
+	std::vector<Fixture*> pColliders = m_pParentScene->getPlayer()->getComponents<Fixture>();
 	for(Fixture* pColl : pColliders)
 		{
 			b2Fixture* pFix = pColl->getFixture();
@@ -168,7 +170,7 @@ void Charger::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug, bool f
 
 	m_hurtBox = Sensor(this, m_body.getBody(), pDebug,
 			yExtent * 1.6, yExtent, b2Vec2(xExtent - (yExtent * 1.6), 0.0f), &m_hurtBox, glm::vec3(1.0f, 0.0f, 0.0f));
-	m_hurtBox.initBegin(std::bind(&Player::reset, m_pPlayer));
+	m_hurtBox.initBegin(std::bind(&Player::reset, m_pParentScene->getPlayer()));
 	m_hurtBox.getFixture()->SetFilterData(hurtFilter);
 
 	setFacingRight(facingRight);

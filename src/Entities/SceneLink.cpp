@@ -7,9 +7,10 @@
 
 #include "SceneLink.h"
 #include "../SceneManager.h"
-#include "../Scene.h"
+#include "../GameplayScene.h"
 
-SceneLink::SceneLink(SceneManager* pSceneManager, Scene* pParentScene) :
+SceneLink::SceneLink(SceneManager* pSceneManager, GameplayScene* pParentScene) :
+	Entity(pParentScene, nullptr, nullptr),
 	m_pSceneManager(pSceneManager),
 	m_pParentScene(pParentScene),
 	m_triggered(false),
@@ -40,7 +41,7 @@ void SceneLink::init(b2World* pWorld, glm::vec2 pos, float xExtent, float yExten
 	m_body = Body(this, pWorld, bodyDef, pos);
 
 	b2Filter sensorFilter;
-	//animasensorFilterlFilter.groupIndex = -2;
+	//sensorFilter.groupIndex = -2;
 	sensorFilter.categoryBits = 0x0004; // sensor
 	sensorFilter.maskBits = 0x0002; // player
 
@@ -52,6 +53,8 @@ void SceneLink::init(b2World* pWorld, glm::vec2 pos, float xExtent, float yExten
 
 void SceneLink::switchScene(Fixture* contact)
 {
+	// Only trigger once to avoid memory leaks TODO potentially find another implementation
+	// without dynamic memory / better managed memory
 	if (!m_triggered)
 	{
 		m_triggered = true;

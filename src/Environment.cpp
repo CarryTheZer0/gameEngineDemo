@@ -12,23 +12,20 @@ Environment::Environment(b2World* pWorld, DebugRenderer* pDebug) :
 	m_pDebug(pDebug)
 {}
 
-void Environment::init(const char* filename)
+void Environment::init(tinyxml2::XMLElement* pLevel)
 {
-	// TODO load nodes
-	m_nodes.emplace_back(b2Vec2(-5.0f, -1.0f));
-	m_nodes.emplace_back(b2Vec2(-5.0f, 4.0f));
-	m_nodes.emplace_back(b2Vec2(5.0f, 4.0f));
-	m_nodes.emplace_back(b2Vec2(5.0f, 12.0f));
-	m_nodes.emplace_back(b2Vec2(19.0f, 12.0f));
-	m_nodes.emplace_back(b2Vec2(19.0f, 11.0f));
-	m_nodes.emplace_back(b2Vec2(22.0f, 11.0f));
-	m_nodes.emplace_back(b2Vec2(22.0f, 10.5f));
-	m_nodes.emplace_back(b2Vec2(27.5f, 10.5f));
-	m_nodes.emplace_back(b2Vec2(27.5f, 5.5f));
-	m_nodes.emplace_back(b2Vec2(24.5f, 5.5f));
-	m_nodes.emplace_back(b2Vec2(24.5f, -3.0f));
-	m_nodes.emplace_back(b2Vec2(15.0f, -3.0f));
-	m_nodes.emplace_back(b2Vec2(15.0f, -1.0f));
+	tinyxml2::XMLElement* pNode = pLevel->FirstChildElement("node");
+
+	while (pNode)
+	{
+		float x, y;
+		pNode->QueryFloatAttribute("x", &x);
+		pNode->QueryFloatAttribute("y", &y);
+
+		m_nodes.emplace_back(b2Vec2(x, y));
+
+		pNode = pNode->NextSiblingElement("node");
+	}
 
 	b2Vec2 vs[m_nodes.size()];
 	std::copy(m_nodes.begin(), m_nodes.end(), vs);

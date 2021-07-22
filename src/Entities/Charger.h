@@ -18,11 +18,12 @@
 class SpriteRenderer;
 class DebugRenderer;
 class Player;
+class GameplayScene;
 
 class Charger : public Entity
 {
 public:
-	Charger(SpriteRenderer* pRenderer, DebugRenderer* pDebug, Player* pPlayer);
+	Charger(GameplayScene* pParentScene, SpriteRenderer* pRenderer, DebugRenderer* pDebug);
 	~Charger() = default;
 
 	void init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug, bool facingRight = false);
@@ -37,9 +38,6 @@ public:
 	void contactEdge(Fixture* contact);
 	void endContactEdge(Fixture* contact);
 private:
-	SpriteRenderer* m_pRenderer;
-	Player* m_pPlayer;
-
 	AnimatedSprite m_sprite;
 	Body m_body;
 	BoxCollider m_colliderMain;
