@@ -10,8 +10,8 @@
 
 #include "TestChar.h"
 
-#include "../SpriteRenderer.h"
-#include "../DebugRenderer.h"
+#include "../Rendering/SpriteRenderer.h"
+#include "../Rendering/DebugRenderer.h"
 #include "../InputHandler.h"
 #include "../PhotographSystem.h"
 #include "../Game.h"
@@ -112,7 +112,7 @@ void Player::update(float deltaTime)
 
 	if (m_shouldReset)
 	{
-		m_body.getBody()->SetTransform(b2Vec2(0.0f, 1.0f), 0.0f);
+		m_body.getBody()->SetTransform(b2Vec2(-3.0f, 1.0f), 0.0f);
 		m_body.getBody()->SetLinearVelocity(b2Vec2());
 		m_shouldReset = false;
 	}

@@ -1,32 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scene>
-	<player x="25.0" y="8.0" />
+	<player x="-3.0" y="1.0" />
 	<level>
 		<sceneMin x="-3.5" y="-3.0"/>
-		<sceneMax x="26.0" y="14.0"/>
+		<sceneMax x="14.0" y="29.0"/>
 		<node x="-5.0" y="-1.0" />
 		<node x="-5.0" y="4.0" />
-		<node x="5.0" y="4.0" />
-		<node x="5.0" y="9.0" />
-		<node x="3.0" y="9.0" />
-		<node x="3.0" y="12.0" />
-		<node x="19.0" y="12.0" />
-		<node x="19.0" y="11.0" />
-		<node x="22.0" y="11.0" />
-		<node x="22.0" y="10.5" />
-		<node x="27.5" y="10.5" />
-		<node x="27.5" y="5.5" />
-		<node x="24.5" y="5.5" />
-		<node x="24.5" y="-3.0" />
-		<node x="15.0" y="-3.0" />
-		<node x="15.0" y="-1.0" />
+		<node x="0.0" y="4.0" />
+		<node x="0.0" y="20.0" />
+		<node x="-2.0" y="20.0" />
+		<node x="-2.0" y="21.0" />
+		<node x="-5.0" y="21.0" />
+		<node x="-5.0" y="26.0" />
+		<node x="-2.0" y="26.0" />
+		<node x="-2.0" y="27.0" />
+		<node x="4.0" y="27.0" />
+		<node x="4.0" y="25.0" />
+		<node x="6.0" y="25.0" />
+		<node x="6.0" y="12.0" />
+		<node x="4.0" y="12.0" />
+		<node x="4.0" y="4.0" />
+		<node x="5.5" y="4.0" />
+		<node x="5.5" y="-1.0" />
+		<node x="4.0" y="-1.0" />
+		<node x="4.0" y="-1.5" />
+		<node x="-1.0" y="-1.5" />
+		<node x="-1.0" y="-1.0" />
 	</level>
 	<entities>
-		<entity x="12.0" y="9.0" name="charger" facingRight="true" />
-		<entity x="8.0" y="9.0" name="mushroom" facingRight="true" />
-		<entity x="17.0" y="9.0" name="mushroom" facingRight="false" />
+		<entity x="3.0" y="25.0" name="mushroom" facingRight="true" />
 	</entities>
 	<sceneLinks>
-		<sceneLink linkName="left" fileName="level1" x="27.0" y="8.0" halfWidth="0.5" halfHeight="2.5" />
+		<sceneLink linkName="leftUpper" fileName="level1" x="-4.5" y="1.5" halfWidth="0.5" halfHeight="2.5" />
+		<sceneLink linkName="leftLower" fileName="level4" x="-4.5" y="23.5" halfWidth="0.5" halfHeight="2.5" />
 	</sceneLinks>
 </scene>

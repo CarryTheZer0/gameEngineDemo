@@ -8,10 +8,11 @@
 #include "Spawner.h"
 
 #include "Entity.h";
-#include "SpriteRenderer.h";
-#include "DebugRenderer.h";
 #include "GameplayScene.h";
 #include <Box2d/Box2d.h>
+
+#include "Rendering/SpriteRenderer.h";
+#include "Rendering/DebugRenderer.h";
 
 #include "Entities/Charger.h"
 #include "Entities/MushroomMonster.h"

@@ -7,8 +7,8 @@
 
 #include "TestFloor.h"
 
-#include "../SpriteRenderer.h"
-#include "../DebugRenderer.h"
+#include "../Rendering/SpriteRenderer.h"
+#include "../Rendering/DebugRenderer.h"
 #include "../InputHandler.h"
 
 Floor::Floor(SpriteRenderer* pRenderer,  DebugRenderer* pDebug) :

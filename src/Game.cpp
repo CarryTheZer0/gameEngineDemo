@@ -10,14 +10,16 @@
 #include <Box2d/Box2d.h>
 
 #include "Game.h"
-#include "ResourceManager.h"
-#include "SpriteRenderer.h"
-#include "DebugRenderer.h"
 #include "ContactListener.h"
 #include "PhotographSystem.h"
-#include "Camera.h"
 #include "Environment.h"
-#include "GameplayScene.h"
+#include "MainMenu.h"
+
+#include "Rendering/SpriteRenderer.h"
+#include "Rendering/DebugRenderer.h"
+#include "Rendering/UIRenderer.h"
+#include "Rendering/Camera.h"
+#include "Rendering/ResourceManager.h"
 
 #include "Entities/TestChar.h"
 #include "Entities/TestFloor.h"
@@ -42,6 +44,7 @@ void Game::init()
     // load shaders
     ResourceManager::loadShader("src/SpriteVertexShader.glsl", "src/SpriteFragmentShader.glsl", nullptr, "sprite");
     ResourceManager::loadShader("src/DebugVertexShader.glsl", "src/DebugFragmentShader.glsl", nullptr, "debug");
+    ResourceManager::loadShader("src/UIVertexShader.glsl", "src/UIFragmentShader.glsl", nullptr, "ui");
 
     // configure shaders
     glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(m_width),
@@ -55,12 +58,19 @@ void Game::init()
     ResourceManager::getShader("sprite").use().setInteger("images", 0);
     ResourceManager::getShader("sprite").setMatrix4("projection", projection);
 
+    // ui
+    ResourceManager::getShader("ui").use().setInteger("images", 0);
+    ResourceManager::getShader("ui").setMatrix4("projection", projection);
+
     // set render-specific controls
     Shader debugShader = ResourceManager::getShader("debug");
     m_pDebugRenderer = new DebugRenderer(debugShader);
 
     Shader shader = ResourceManager::getShader("sprite");
     m_pRenderer = new SpriteRenderer(shader);
+
+    Shader uiShader = ResourceManager::getShader("ui");
+    m_pUIRenderer = new UIRenderer(uiShader);
 
     // load textures
     ResourceManager::loadTexture("Resources/Textures/Spritesheet.png", true, "run");
@@ -69,6 +79,7 @@ void Game::init()
     ResourceManager::loadTexture("Resources/Textures/platformsketch.png", true, "platform");
     ResourceManager::loadTexture("Resources/Textures/dplan.png", true, "dplan");
     ResourceManager::loadTexture("Resources/Textures/sketchBackground.png", true, "background");
+    ResourceManager::loadTexture("Resources/Textures/UItest.png", true, "UItest");
 
     glfwSetWindowUserPointer( m_pWindow, &m_input );
 
@@ -91,11 +102,15 @@ void Game::init()
     } );
 
     // TODO maybe not use dynamically allocated scenes
-    GameplayScene* sc1 = new GameplayScene(
-    		&m_input, m_pRenderer, m_pDebugRenderer, this, &m_sceneManager, "level1");
+//    GameplayScene* sc1 = new GameplayScene(&m_input, m_pRenderer, m_pDebugRenderer,
+//    		m_pUIRenderer, this, &m_sceneManager, "level1");
+
+    MainMenu* sc1 = new MainMenu(&m_input, m_pRenderer, m_pDebugRenderer,
+    	m_pUIRenderer, this, &m_sceneManager);
 
     unsigned int sc1ID = m_sceneManager.addScene(sc1);
     sc1->startScene();
+    m_sceneManager.switchScene(sc1ID);
 }
 
 int Game::run()

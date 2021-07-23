@@ -33,6 +33,7 @@ void InputHandler::mouseMoveCallback(double xPos, double yPos)
 {
 	m_mousePos.x = xPos;
 	m_mousePos.y = yPos;
+	onMouseMove();
 }
 
 void InputHandler::clearKeys()
@@ -41,6 +42,7 @@ void InputHandler::clearKeys()
 	m_keyReleased.clear();
 	m_mousePressed.clear();
 	m_mouseReleased.clear();
+	m_mouseMoved = false;
 }
 
 void InputHandler::onKeyPressed(int key)
@@ -69,7 +71,7 @@ void InputHandler::onMouseReleased(int button)
 
 void InputHandler::onMouseMove()
 {
-
+	m_mouseMoved = true;
 }
 
 bool InputHandler::wasKeyPressed(int key)
@@ -95,6 +97,11 @@ bool InputHandler::wasMousePressed(int button)
 bool InputHandler::wasMouseReleased(int button)
 {
 	return m_mouseReleased[button];
+}
+
+bool InputHandler::wasMouseMoved()
+{
+	return m_mouseMoved;
 }
 
 bool InputHandler::isMouseHeld(int button)

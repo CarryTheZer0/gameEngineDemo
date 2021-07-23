@@ -11,24 +11,23 @@
 #include <assert.h>
 
 #include "Entity.h"
-#include "SpriteRenderer.h"
-#include "DebugRenderer.h"
 #include "InputHandler.h"
-#include "Texture.h"
-#include "ResourceManager.h"
 #include "Game.h"
 
+#include "Rendering/Texture.h"
+#include "Rendering/SpriteRenderer.h"
+#include "Rendering/DebugRenderer.h"
+#include "Rendering/UIRenderer.h"
+#include "Rendering/ResourceManager.h"
+
 #include "Entities/TestChar.h"
-#include "Entities/TestFloor.h"
-#include "Entities/Charger.h"
-#include "Entities/MushroomMonster.h"
 #include "Entities/SceneLink.h"
 
 #include "Spawner.h"
 
 GameplayScene::GameplayScene(InputHandler* pInput, SpriteRenderer* pRenderer, DebugRenderer* pDebug,
-		Game* pGame, SceneManager* pSceneManager, const char* filename) :
-	Scene(pInput, pRenderer, pDebug, pGame, pSceneManager),
+		UIRenderer* pUIRenderer, Game* pGame, SceneManager* pSceneManager, const char* filename) :
+	Scene(pInput, pRenderer, pDebug, pUIRenderer, pGame, pSceneManager),
 	m_filename(filename),
 	m_entityRemoved(false),
 	m_parentGame(pGame),
@@ -38,6 +37,11 @@ GameplayScene::GameplayScene(InputHandler* pInput, SpriteRenderer* pRenderer, De
 	m_pWorld = new b2World(gravity);
 	m_env = Environment(m_pWorld, m_pDebug);
 	m_camera = Camera(pGame->getWidth(), pGame->getHeight());
+	m_ui = UIManager(pInput);
+
+	Style myStyle = Style(pUIRenderer, "UItest", 0.15f, 0.15f, 0.25f, 0.25f);
+
+	m_ui.addStyle("test", myStyle);
 
 	m_pWorld->SetContactListener(&m_contacts);
 }
@@ -146,7 +150,8 @@ void GameplayScene::startScene()
 		pSceneLink->QueryStringAttribute("fileName", &fileName);
 
 	    GameplayScene* nextScene = new GameplayScene(
-	    		m_pInput, m_pRenderer, m_pDebug, m_pGame, m_pSceneManager, fileName);
+	    		m_pInput, m_pRenderer, m_pDebug, m_pUIRenderer, m_pGame,
+				m_pSceneManager, fileName);
 	    unsigned int sceneID = m_pSceneManager->addScene(nextScene);
 
 	    linkTo(linkName, sceneID);
@@ -184,6 +189,7 @@ void GameplayScene::update(float deltaTime)
     {
     	e->update(deltaTime);
     }
+	m_ui.update();
 	m_pInput->clearKeys();
 
 	m_camera.update(deltaTime);
@@ -209,6 +215,9 @@ void GameplayScene::render(float percent)
 
 	m_pRenderer->draw();
 	m_pDebug->draw();
+
+	m_ui.render();
+	m_pUIRenderer->draw();
 }
 
 void GameplayScene::addEntity(Entity* pObject)

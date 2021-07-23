@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scene>
+	<player x="3.0" y="1.0" />
+	<level>
+		<sceneMin x="-4.25" y="-2.0" />
+		<sceneMax x="3.5" y="17.0" />
+		<node x="-2.25" y="0.4" />
+		<node x="-2.25" y="7.2" />
+		<node x="-2.25" y="8.4" />
+		<node x="-1.5" y="8.4" />
+		<node x="-1.5" y="9.6" />
+		<node x="-0.75" y="9.6" />
+		<node x="-0.75" y="10.8" />
+		<node x="0.0" y="10.8" />
+		<node x="0.0" y="12.0" />
+		<node x="5.0" y="12.0" />
+		<node x="5.0" y="9.0" />
+		<node x="1.0" y="9.0" />
+		<node x="1.0" y="7.8" />
+		<node x="1.75" y="7.8" />
+		<node x="1.75" y="6.6" />
+		<node x="2.5" y="6.6" />
+		<node x="2.5" y="5.4" />
+		<node x="5.0" y="5.4" />
+		<node x="5.0" y="0.4" />
+	</level>
+	<entities />
+	<sceneLinks>
+		<sceneLink linkName="upper" fileName="level1" x="4.5" y="2.9" halfWidth="0.5" halfHeight="2.5" />
+		<sceneLink linkName="lower" fileName="level2" x="4.5" y="10.5" halfWidth="0.5" halfHeight="1.5" />
+	</sceneLinks>
+</scene>

@@ -36,6 +36,8 @@ public:
 
 	bool wasMousePressed(int button);
 	bool wasMouseReleased(int button);
+	bool wasMouseMoved();
+
 	glm::vec2 getMousePos();
 	bool isMouseHeld(int button);
 private:
@@ -50,6 +52,7 @@ private:
 	std::map<int, bool> m_mousePressed;
 	std::map<int, bool> m_mouseReleased;
 	std::map<int, bool> m_mouseHeld;
+	bool m_mouseMoved;
 };
 
 #endif /* INPUTHANDLER_H_ */

@@ -7,7 +7,7 @@
 
 #include "CircleCollider.h"
 
-#include "../DebugRenderer.h"
+#include "../Rendering/DebugRenderer.h"
 
 CircleCollider::CircleCollider(Entity* pOwner, b2Body* pBody, DebugRenderer* pDebug, float radius,
 		b2Vec2 offset, float density, float friction, Fixture* pointer) :

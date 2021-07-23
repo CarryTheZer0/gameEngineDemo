@@ -7,7 +7,7 @@
 
 #include "Sensor.h"
 #include "../Entity.h"
-#include "../DebugRenderer.h"
+#include "../Rendering/DebugRenderer.h"
 
 void dummy(Fixture* contact) {}
 
