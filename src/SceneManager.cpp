@@ -30,10 +30,13 @@ unsigned int SceneManager::addScene(Scene* s)
 
 void SceneManager::switchScene(unsigned int id)
 {
-	m_sceneMap[m_currentScene]->stopScene();
+	if (id != m_currentScene)
+	{
+		m_sceneMap[m_currentScene]->stopScene();
 
-	m_currentScene = id;
-	m_sceneMap[id]->startScene();
+		m_currentScene = id;
+		m_sceneMap[id]->startScene();
+	}
 }
 
 void SceneManager::removeScene(unsigned int id)

@@ -14,8 +14,8 @@
 #include <glm/glm.hpp>
 #include "Component.h"
 
-#include "SpriteRenderer.h"
-#include "DebugRenderer.h"
+#include "Rendering/SpriteRenderer.h"
+#include "Rendering/DebugRenderer.h"
 
 class GameplayScene;
 

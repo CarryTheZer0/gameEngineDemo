@@ -10,7 +10,7 @@
 
 #include <glm/glm.hpp>
 #include "../Component.h"
-#include "../Texture.h"
+#include "../Rendering/Texture.h"
 
 class Entity;
 class SpriteRenderer;

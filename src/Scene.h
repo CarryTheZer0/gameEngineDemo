@@ -17,16 +17,18 @@ class SceneManager;
 class Game;
 class SpriteRenderer;
 class DebugRenderer;
+class UIRenderer;
 
 class Scene
 {
 public:
 	Scene() = delete;
-	Scene(InputHandler* pInput, SpriteRenderer* pRenderer, DebugRenderer* pDebug, Game* pGame,
-			SceneManager* pSceneManager) :
+	Scene(InputHandler* pInput, SpriteRenderer* pRenderer, DebugRenderer* pDebug,
+			UIRenderer* pUIRenderer, Game* pGame, SceneManager* pSceneManager) :
 		m_pInput(pInput),
 		m_pRenderer(pRenderer),
 		m_pDebug(pDebug),
+		m_pUIRenderer(pUIRenderer),
 		m_pGame(pGame),
 		m_pSceneManager(pSceneManager),
 		m_id(0)
@@ -60,6 +62,7 @@ protected:
 	InputHandler* m_pInput;
 	SpriteRenderer* m_pRenderer;
 	DebugRenderer* m_pDebug;
+	UIRenderer* m_pUIRenderer;
 };
 
 #endif /* SCENE_H_ */

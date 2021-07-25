@@ -13,10 +13,11 @@
 #include <glm/glm.hpp>
 #include <unordered_map>
 
-#include "Camera.h"
+#include "Rendering/Camera.h"
 #include "Environment.h"
 #include "PhotographSystem.h"
 #include "ContactListener.h"
+#include "UI/UIManager.h"
 
 class Entity;
 class SceneLink;
@@ -26,7 +27,8 @@ class GameplayScene : public Scene
 public:
 	GameplayScene() = delete;
 	GameplayScene(InputHandler* pInput, SpriteRenderer* pRenderer, DebugRenderer* pDebug,
-			Game* pGame, SceneManager* pSceneManager, const char* filename);
+			UIRenderer* pUIRenderer, Game* pGame, SceneManager* pSceneManager,
+			const char* filename);
 	virtual ~GameplayScene();
 
 	void loadScene() override;
@@ -44,7 +46,8 @@ public:
 	void setCameraPos(glm::vec2 pos) { m_camera.setPos(pos); }
 
 	Camera& getCamera() { return m_camera; }
-	void setSpawnPoint(glm::vec2 spawn);
+	void setSpawnPoint(glm::vec2 spawn) { m_spawnPoint = spawn; }
+	glm::vec2 getSpawnPoint() { return m_spawnPoint; }
 	void onEntityRemoved() { m_entityRemoved = true; }
 
 	Player* getPlayer() { return m_pPlayer; }
@@ -57,6 +60,7 @@ protected:
 	ContactListener m_contacts;
 	Player* m_pPlayer;
 	Game* m_parentGame;
+	UIManager m_ui;
 
 	std::string m_filename;
 

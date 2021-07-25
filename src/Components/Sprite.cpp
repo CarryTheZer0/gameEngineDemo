@@ -5,9 +5,9 @@
  *      Author: mchlp
  */
 
-#include "../SpriteRenderer.h"
+#include "../Rendering/SpriteRenderer.h"
 #include "../Entity.h"
-#include "../ResourceManager.h"
+#include "../Rendering/ResourceManager.h"
 #include "Sprite.h"
 
 Sprite::Sprite(Entity* pOwner, SpriteRenderer* pRenderer, const char* name,

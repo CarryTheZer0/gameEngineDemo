@@ -16,7 +16,7 @@
 #include "../Components/BoxCollider.h"
 #include "../Components/CircleCollider.h"
 #include "../Components/Sensor.h"
-#include "../Camera.h"
+#include "../Rendering/Camera.h"
 
 class InputHandler;
 class SpriteRenderer;

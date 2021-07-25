@@ -13,7 +13,7 @@
 #include <Box2d/Box2d.h>
 #include "tinyxml2.h"
 
-#include "DebugRenderer.h"
+#include "Rendering/DebugRenderer.h"
 
 class Environment
 {

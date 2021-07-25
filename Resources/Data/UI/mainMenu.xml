@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<UI>
+	<Face Type="Panel" Name="rootPanel" Style="test">
+		<Property Name="xPercentage" Value="30" />
+		<Property Name="yPercentage" Value="25" />
+		<Property Name="wPercentage" Value="40" />
+		<Property Name="hPercentage" Value="50" />
+		<Face Type="Button" Name="startButton" Style="test">
+			<Property Name="xPercentage" Value="35" />
+			<Property Name="yPercentage" Value="9" />
+			<Property Name="wPercentage" Value="30" />
+			<Property Name="hPixels" Value="100" />
+			<Property Name="eventName" Value="StartGame" />
+		</Face>
+		<Face Type="Button" Name="loadButton" Style="test">
+			<Property Name="xPercentage" Value="35" />
+			<Property Name="yPercentage" Value="18" />
+			<Property Name="yPixels" Value="70" />
+			<Property Name="wPercentage" Value="30" />
+			<Property Name="hPixels" Value="100" />
+			<Property Name="eventName" Value="LoadGame" />
+		</Face>
+		<Face Type="Button" Name="exitButton" Style="test">
+			<Property Name="xPercentage" Value="35" />
+			<Property Name="yPercentage" Value="27" />
+			<Property Name="yPixels" Value="140" />
+			<Property Name="wPercentage" Value="30" />
+			<Property Name="hPixels" Value="100" />
+			<Property Name="eventName" Value="Exit" />'
+		</Face>
+	</Face>
+</UI>
