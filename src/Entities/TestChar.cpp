@@ -158,6 +158,7 @@ void Player::render(float percent, glm::vec2 camera, float scale)
 void Player::jump(float yForce)
 {
 	float x = m_body.getBody()->GetLinearVelocity().x;
+	m_grounded = false;
 	m_body.getBody()->SetLinearVelocity(b2Vec2(x, 0.0f));
 	m_body.getBody()->ApplyForceToCenter(b2Vec2(0.0f, -yForce), true);
 	m_sprite.playAnimation("jump", false);
@@ -220,7 +221,7 @@ void Player::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug)
 	addComponent(&m_colliderMain);
 	addComponent(&m_colliderCircle);
 	m_sprite.addAnimation(glm::vec4(0.0f, 0.0f, 0.2f, 0.33f), 4, "run");
-	m_sprite.addAnimation(glm::vec4(0.8f, 0.0f, 1.0f, 0.33f), 1, "idle");
+	m_sprite.addAnimation(glm::vec4(0.8f, 0.66f, 1.0f, 1.0f), 1, "idle");
 	m_sprite.addAnimation(glm::vec4(0.8f, 0.0f, 1.0f, 0.33f), 1, "snap");
 	m_sprite.addAnimation(glm::vec4(0.0f, 0.33f, 0.2f, 0.66f), 4, "jump");
 	m_sprite.addAnimation(glm::vec4(0.0f, 0.66f, 0.2f, 1.0f), 1, "fall");

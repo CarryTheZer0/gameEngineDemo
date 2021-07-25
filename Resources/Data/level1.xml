@@ -10,7 +10,6 @@
 		<node x="5.0" y="7.0" />
 		<node x="-5.0" y="7.0" />
 		<node x="-5.0" y="12.0" />
-		<node x="5.0" y="12.0" />
 		<node x="19.0" y="12.0" />
 		<node x="19.0" y="11.0" />
 		<node x="22.0" y="11.0" />
@@ -28,8 +27,8 @@
 		<entity x="17.0" y="9.0" name="mushroom" facingRight="false" />
 	</entities>
 	<sceneLinks>
-		<sceneLink linkName="leftUpper" fileName="level3" x="-4.5" y="1.5" halfWidth="0.5" halfHeight="2.5" />
-		<sceneLink linkName="leftLower" fileName="level4" x="-4.5" y="9.5" halfWidth="0.5" halfHeight="2.5" />
-		<sceneLink linkName="right" fileName="level2" x="27.0" y="8.0" halfWidth="0.5" halfHeight="2.5" />
+		<sceneLink linkName="leftUpper" fileName="level3" x="-4.5" y="1.5" halfWidth="0.5" halfHeight="2.5" spawnX="3.5" spawnY="3.5" />
+		<sceneLink linkName="leftLower" fileName="level4" x="-4.5" y="9.5" halfWidth="0.5" halfHeight="2.5" spawnX="3.5" spawnY="4.9" />
+		<sceneLink linkName="right" fileName="level2" x="27.0" y="8.0" halfWidth="0.5" halfHeight="2.5" spawnX="-3.5" spawnY="3.0" />
 	</sceneLinks>
 </scene>

@@ -73,7 +73,7 @@ void Game::init()
     m_pUIRenderer = new UIRenderer(uiShader);
 
     // load textures
-    ResourceManager::loadTexture("Resources/Textures/Spritesheet.png", true, "run");
+    ResourceManager::loadTexture("Resources/Textures/SpritesheetPlayer.png", true, "run");
     ResourceManager::loadTexture("Resources/Textures/SpritesheetAnimal.png", true, "animal");
     ResourceManager::loadTexture("Resources/Textures/spritesheetMushroom.png", true, "mush");
     ResourceManager::loadTexture("Resources/Textures/platformsketch.png", true, "platform");

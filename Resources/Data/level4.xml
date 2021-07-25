@@ -26,7 +26,7 @@
 	</level>
 	<entities />
 	<sceneLinks>
-		<sceneLink linkName="upper" fileName="level1" x="4.5" y="2.9" halfWidth="0.5" halfHeight="2.5" />
-		<sceneLink linkName="lower" fileName="level2" x="4.5" y="10.5" halfWidth="0.5" halfHeight="1.5" />
+		<sceneLink linkName="upper" fileName="level1" x="4.5" y="2.9" halfWidth="0.5" halfHeight="2.5" spawnX="-3.5" spawnY="11.0" />
+		<sceneLink linkName="lower" fileName="level2" x="4.5" y="10.5" halfWidth="0.5" halfHeight="1.5" spawnX="-3.5" spawnY="25.5" />
 	</sceneLinks>
 </scene>

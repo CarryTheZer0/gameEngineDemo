@@ -40,6 +40,7 @@ void MainMenu::loadScene()
 void MainMenu::update(float deltaTime)
 {
 	m_uiManager.update();
+	m_pInput->clearKeys();
 }
 
 void MainMenu::render(float deltaTime)
@@ -62,7 +63,8 @@ void MainMenu::exitGame(const char* buttonName)
 void MainMenu::startGame(const char* buttonName)
 {
 	GameplayScene* sc1 = new GameplayScene(m_pInput, m_pRenderer, m_pDebug,
-			m_pUIRenderer, m_pGame, m_pSceneManager, "level4");
+			m_pUIRenderer, m_pGame, m_pSceneManager, "level1");
+	sc1->setSpawnPoint(glm::vec2(25.0f, 7.0f));
 
 	unsigned int sc1ID = m_pSceneManager->addScene(sc1);
 	sc1->startScene();

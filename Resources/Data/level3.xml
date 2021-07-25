@@ -13,6 +13,6 @@
 		<entity x="-3.0" y="1.0" name="mushroom" facingRight="false" />
 	</entities>
 	<sceneLinks>
-		<sceneLink linkName="right" fileName="level1" x="4.5" y="1.5" halfWidth="0.5" halfHeight="2.5" />
+		<sceneLink linkName="right" fileName="level1" x="4.5" y="1.5" halfWidth="0.5" halfHeight="2.5" spawnX="-3.5" spawnY="3.5"/>
 	</sceneLinks>
 </scene>

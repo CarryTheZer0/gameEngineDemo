@@ -83,7 +83,7 @@ void GameplayScene::loadScene()
 	pPlayer->QueryFloatAttribute("x", &x);
 	pPlayer->QueryFloatAttribute("y", &y);
 	Player* player = new Player(m_parentGame, this, m_pRenderer, m_pDebug, m_pInput, &m_photo);
-	player->init(m_pWorld, glm::vec2(x, y), m_pDebug);
+	player->init(m_pWorld, m_spawnPoint, m_pDebug);
 	m_pPlayer = player;
 	m_entities.emplace_back(player);
 
@@ -146,14 +146,18 @@ void GameplayScene::startScene()
 	{
 		const char* linkName;
 		const char* fileName;
+		float x, y;
 		pSceneLink->QueryStringAttribute("linkName", &linkName);
 		pSceneLink->QueryStringAttribute("fileName", &fileName);
+		pSceneLink->QueryFloatAttribute("spawnX", &x);
+		pSceneLink->QueryFloatAttribute("spawnY", &y);
 
 	    GameplayScene* nextScene = new GameplayScene(
 	    		m_pInput, m_pRenderer, m_pDebug, m_pUIRenderer, m_pGame,
 				m_pSceneManager, fileName);
-	    unsigned int sceneID = m_pSceneManager->addScene(nextScene);
 
+	    nextScene->setSpawnPoint(glm::vec2(x, y));
+	    unsigned int sceneID = m_pSceneManager->addScene(nextScene);
 	    linkTo(linkName, sceneID);
 
 		pSceneLink = pSceneLink->NextSiblingElement("sceneLink");
@@ -226,7 +230,5 @@ void GameplayScene::addEntity(Entity* pObject)
 	if (true)
 		m_photo.addEntity(pObject);
 }
-
-void GameplayScene::setSpawnPoint(glm::vec2 spawn) {}
 
 void GameplayScene::loadMap(const char* filepath) {}

@@ -31,7 +31,7 @@
 		<entity x="3.0" y="25.0" name="mushroom" facingRight="true" />
 	</entities>
 	<sceneLinks>
-		<sceneLink linkName="leftUpper" fileName="level1" x="-4.5" y="1.5" halfWidth="0.5" halfHeight="2.5" />
-		<sceneLink linkName="leftLower" fileName="level4" x="-4.5" y="23.5" halfWidth="0.5" halfHeight="2.5" />
+		<sceneLink linkName="leftUpper" fileName="level1" x="-4.5" y="1.5" halfWidth="0.5" halfHeight="2.5" spawnX="26.0" spawnY="10.0" />
+		<sceneLink linkName="leftLower" fileName="level4" x="-4.5" y="23.5" halfWidth="0.5" halfHeight="2.5" spawnX="3.5" spawnY="11.5" />
 	</sceneLinks>
 </scene>
