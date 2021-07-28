@@ -220,7 +220,7 @@ void GameplayScene::render(float percent)
     		m_env.getNodes(), m_camera.getScale());
     for (auto node : nodes)
     {
-    	m_pDebug->drawLine(node.second, m_pPlayer->getPos() * m_camera.getScale() - glm::vec2(0.0f, 60.0f * m_camera.getScale()), glm::vec2());
+    	//m_pDebug->drawLine(node.second, m_pPlayer->getPos() * m_camera.getScale() - glm::vec2(0.0f, 60.0f * m_camera.getScale()), glm::vec2());
         m_pRenderer->drawLineOfSightFilter(glm::vec2(
         		-m_camera.getPos().x + node.second.x ,
     			m_camera.getPos().y - node.second.y +  m_pGame->getHeight()

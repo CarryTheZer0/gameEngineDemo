@@ -33,15 +33,17 @@ void PhotographSystem::takePhoto(glm::vec2 pos, glm::vec2 dir)
 
 	std::map<float, std::tuple<Entity*, float, float>> hits;
 
+	// find the min and max corner of each entity relative to the bottom of the field of view
 	for (Entity* ent : m_targets)
 	{
 		std::vector<glm::vec2> coords = computeCorners(ent);
 
+		// set initial values for min/max
 		glm::vec2 currentDir = glm::normalize(coords[0] - pos);
-
 		float maxAngle = glm::acos(glm::dot(currentDir, bottomDir));
 		float minAngle = maxAngle;
 
+		// adjust sign
 		float crossProdSign = (-bottomDir.x) * (-currentDir.y) - (-currentDir.x) * (-bottomDir.y);
 		if (crossProdSign < 0)
 		{
@@ -59,10 +61,12 @@ void PhotographSystem::takePhoto(glm::vec2 pos, glm::vec2 dir)
 			currentDir = glm::normalize(coord - pos);
 			float currentAngle = glm::acos(glm::dot(currentDir, bottomDir));
 
+			// adjust sign
 			crossProdSign = (-bottomDir.x) * (-currentDir.y) - (-currentDir.x) * (-bottomDir.y);
 			if (crossProdSign < 0) currentAngle *= -1;
 			if (dir.x > 0) currentAngle *= -1;
 
+			// save the min/max values
 			if (currentAngle < minAngle) minAngle = currentAngle;
 			else if (currentAngle > maxAngle) maxAngle = currentAngle;
 		}
@@ -79,49 +83,15 @@ void PhotographSystem::takePhoto(glm::vec2 pos, glm::vec2 dir)
 		{
 			float minPercent = std::get<1>(hit.second)/0.6f * 100.0f;
 			float maxPercent = std::get<2>(hit.second)/0.6f * 100.0f;
-			float height = maxPercent - minPercent;
-			if (minPercent < 0 && maxPercent < 0 || minPercent > 100 && maxPercent > 100 ) continue;
+
+			// only draw entities in range
+			if ((minPercent < 0 && maxPercent < 0) || (minPercent > 100 && maxPercent > 100)) continue;
 
 			Face* pParent = pWindow->getAnchor("ImageBase");
 			Face* pNewFace = m_pUI->addElement(pParent, pWindow, "image", "ImagePanel", "test");
 			pNewFace->setProperty("imageName", photo->getNameId());
 
-			float overlapMin = 0.0f;
-			float overlapMax = 0.0f;
-			if (maxPercent > 100.0f)
-			{
-				overlapMax = maxPercent - 100.0f;
-				pNewFace->setProperty("srcYMin", std::to_string(overlapMax / height));
-			}
-
-			if (minPercent < 0.0f)
-			{
-				overlapMin = -minPercent;
-				pNewFace->setProperty("srcYMax", std::to_string(1.0f - (overlapMin / height)));
-			}
-
-
-
-			float width = height * photo->getWidthRatio();
-			float xPercent = 0.0f;
-			float overlapWidth;
-			if (width > 100.0f)
-			{
-				overlapWidth = ((width / 100.0f) - 1.0f) / 2;
-				pNewFace->setProperty("srcXMin", std::to_string(overlapWidth));
-				pNewFace->setProperty("srcXMax", std::to_string(1.0f - overlapWidth));
-				width = 100.0f;
-			}
-			else
-			{
-				xPercent = rand() % static_cast<int>((100 - width));
-			}
-
-			pNewFace->setRect(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), glm::vec4(
-					xPercent,
-					std::max(100.0f - maxPercent, 0.0f),
-					width,
-					height - overlapMin - overlapMax));
+			drawElement(minPercent, maxPercent, pNewFace, photo->getWidthRatio());
 		}
 	}
 
@@ -136,6 +106,7 @@ std::vector<glm::vec2> PhotographSystem::computeCorners(Entity* ent)
 
 	std::vector<glm::vec2> coords;
 
+	// add each corner of the AABB for each collider
 	for(Fixture* pColl : pColliders)
 	{
 		b2Fixture* pFix = pColl->getFixture();
@@ -260,6 +231,49 @@ glm::vec2 PhotographSystem::projectPointOnVector(glm::vec2 point, glm::vec2 vec)
 	returnVal.x = glm::dot(point, vec) / dot(vec, vec) * vec.x;
 	returnVal.y = glm::dot(point, vec) / dot(vec, vec) * vec.y;
 	return returnVal;
+}
+
+void PhotographSystem::drawElement(float minPercent, float maxPercent, Face* panel, float widthHeightRatio)
+{
+	float overlapMin = 0.0f;
+	float overlapMax = 0.0f;
+	float height = maxPercent - minPercent;
+
+	// cut off OOB pixels on the y axis, get amount of overlap
+	if (maxPercent > 100.0f)
+	{
+		overlapMax = maxPercent - 100.0f;
+		panel->setProperty("srcYMin", std::to_string(overlapMax / height));
+	}
+
+	if (minPercent < 0.0f)
+	{
+		overlapMin = -minPercent;
+		panel->setProperty("srcYMax", std::to_string(1.0f - (overlapMin / height)));
+	}
+
+	float width = height * widthHeightRatio;
+	float xPercent = 0.0f;
+	if (width > 100.0f)
+	{
+		// cut off OOB pixels on the x axis
+		float overlapWidth = ((width / 100.0f) - 1.0f) / 2;
+		panel->setProperty("srcXMin", std::to_string(overlapWidth));
+		panel->setProperty("srcXMax", std::to_string(1.0f - overlapWidth));
+		width = 100.0f;
+	}
+	else
+	{
+		// random x position
+		xPercent = rand() % static_cast<int>((100 - width));
+	}
+
+	// set dimensions: x, y, w, h
+	panel->setRect(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), glm::vec4(
+			xPercent, 								// x
+			std::max(100.0f - maxPercent, 0.0f),	// y
+			width,									// w
+			height - overlapMin - overlapMax));		// h
 }
 
 void PhotographSystem::closeUI(const char* buttonName, const char* UIName)

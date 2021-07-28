@@ -14,6 +14,7 @@
 
 class UIManager;
 class Player;
+class Face;
 
 class PhotographSystem
 {
@@ -40,6 +41,7 @@ private:
 	glm::vec2 m_castOrigin;
 
 	void closeUI(const char* buttonName, const char* UIName);
+	void drawElement(float minPercent, float maxPercent, Face* panel, float widthHeightRatio);
 };
 
 #endif /* PHOTOGRAPHSYSTEM_H_ */
