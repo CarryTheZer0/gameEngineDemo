@@ -14,6 +14,7 @@
 #include "../Components/BoxCollider.h"
 #include "../Components/CircleCollider.h"
 #include "../Components/Sensor.h"
+#include "../Components/Photographable.h"
 
 class SpriteRenderer;
 class DebugRenderer;
@@ -48,6 +49,7 @@ private:
 	CircleCollider m_colliderCircle;
 	Sensor m_frontCheck;
 	Sensor m_colliderJump;
+	Photographable m_photographable;
 
 	bool m_facingRight;
 	bool m_contact;

@@ -109,10 +109,24 @@ void SpriteRenderer::drawSprite(Texture2D &texture, glm::vec4 srcCoords,
     m_shader.setIntegerList("images", m_texCount, samplers);
 }
 
-void SpriteRenderer::setShadows(glm::vec2 pos, glm::vec2 dir)
+void SpriteRenderer::drawLineOfSightFilter(glm::vec2 a)
+{
+    m_shader.use();
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_quadSSBO);
+
+	float vertex[] = {
+	        a.x, a.y
+	};
+
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, m_batchOffsetFilter * sizeof(vertex), sizeof(vertex), vertex);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, m_quadSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	m_batchOffsetFilter++;
+}
+
+void SpriteRenderer::setShadowOrigin(glm::vec2 pos)
 {
 	m_shader.use();
-    m_shader.setVector2f("viewDirection", dir);
     m_shader.setVector2f("castOrigin", pos);
 }
 
@@ -120,12 +134,16 @@ void SpriteRenderer::draw()
 {
 	// draw 2 triangles per sprite
 	m_shader.use();
+	m_shader.setInteger("filterPolySize", m_batchOffsetFilter - 1);
 	glBindVertexArray(m_quadVAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_quadIBO);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, m_quadSSBO);
 	glDrawElements(GL_TRIANGLES, m_batchOffset * 6, GL_UNSIGNED_INT, (void*)0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	glBindVertexArray(0);
 	m_batchOffset = 0;
+	m_batchOffsetFilter = 0;
 }
 
 void SpriteRenderer::initRenderData()
@@ -133,6 +151,7 @@ void SpriteRenderer::initRenderData()
     glGenVertexArrays(1, &m_quadVAO);
     glGenBuffers(1, &m_quadVBO);
     glGenBuffers(1, &m_quadIBO);
+    glGenBuffers(1, &m_quadSSBO);
 
     float vertices[] = {
             // pos      // texPos   // texID
@@ -153,6 +172,14 @@ void SpriteRenderer::initRenderData()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_quadIBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices) * 1000, nullptr, GL_DYNAMIC_DRAW);
 
+    float verticesSSBO[] = {
+    		0.0f, 0.0f
+    };
+
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_quadSSBO);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, m_quadSSBO);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(verticesSSBO) * 1000, nullptr, GL_DYNAMIC_COPY);
+
     glBindVertexArray(m_quadVAO);
 
     glEnableVertexAttribArray(0);
@@ -166,5 +193,6 @@ void SpriteRenderer::initRenderData()
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
     glBindVertexArray(0);
 }

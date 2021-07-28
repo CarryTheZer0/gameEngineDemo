@@ -9,6 +9,7 @@
 
 #include "tinyxml2.h"
 #include <assert.h>
+#include <vector>
 
 #include "Entity.h"
 #include "InputHandler.h"
@@ -31,7 +32,8 @@ GameplayScene::GameplayScene(InputHandler* pInput, SpriteRenderer* pRenderer, De
 	m_filename(filename),
 	m_entityRemoved(false),
 	m_parentGame(pGame),
-	m_pPlayer(nullptr)
+	m_pPlayer(nullptr),
+	m_photo(m_pPlayer, &m_ui)
 {
 	b2Vec2 gravity(0.0f, 10.0f);
 	m_pWorld = new b2World(gravity);
@@ -104,6 +106,7 @@ void GameplayScene::loadScene()
 				this, m_pRenderer, m_pDebug, m_pWorld);
 		if (ent)
 			m_entities.emplace_back(ent);
+			m_photo.addEntity(ent);
 
 		pEntity = pEntity->NextSiblingElement("entity");
 	}
@@ -187,7 +190,7 @@ void GameplayScene::update(float deltaTime)
 	int32 velocityIterations = 6;
 	int32 positionIterations = 2;
 	m_pWorld->Step(deltaTime, velocityIterations, positionIterations);
-    m_pRenderer->setShadows(glm::vec2(), glm::vec2());
+    m_pRenderer->setShadowOrigin(glm::vec2());
 
     for (Entity* e : m_entities)
     {
@@ -211,6 +214,18 @@ void GameplayScene::render(float percent)
     		m_camera.getPos(), glm::vec2(), glm::vec2(texBack.getWidth() * 0.7, texBack.getHeight() * 0.7));
 
     m_env.render(m_camera.getPos(), m_camera.getScale());
+
+    // process filter for camera line of sight
+    std::vector<std::pair<float, glm::vec2>> nodes = m_photo.generateShadows(
+    		m_env.getNodes(), m_camera.getScale());
+    for (auto node : nodes)
+    {
+    	//m_pDebug->drawLine(node.second, m_pPlayer->getPos() * m_camera.getScale() - glm::vec2(0.0f, 60.0f * m_camera.getScale()), glm::vec2());
+        m_pRenderer->drawLineOfSightFilter(glm::vec2(
+        		-m_camera.getPos().x + node.second.x ,
+    			m_camera.getPos().y - node.second.y +  m_pGame->getHeight()
+        ));
+    }
 
     for (Entity* e : m_entities)
     {

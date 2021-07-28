@@ -22,8 +22,12 @@ public:
 
 	void callEvent(const char*);
 	void addEvent(const char*, std::function<void(const char*)>);
+
+	void addAnchor(const char* name, Face* face);
+	Face* getAnchor(const char* name) { return m_anchorPoints[name]; }
 private:
 	std::unordered_map<std::string, std::function<void(const char*)>> m_eventCalls;
+	std::unordered_map<std::string, Face*> m_anchorPoints;
 };
 
 

@@ -64,7 +64,7 @@ void MainMenu::startGame(const char* buttonName)
 {
 	GameplayScene* sc1 = new GameplayScene(m_pInput, m_pRenderer, m_pDebug,
 			m_pUIRenderer, m_pGame, m_pSceneManager, "level1");
-	sc1->setSpawnPoint(glm::vec2(25.0f, 7.0f));
+	sc1->setSpawnPoint(glm::vec2(-1.5f, 3.5f));
 
 	unsigned int sc1ID = m_pSceneManager->addScene(sc1);
 	sc1->startScene();

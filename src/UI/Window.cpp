@@ -23,3 +23,8 @@ void Window::addEvent(const char* name, std::function<void(const char*)> func)
 {
 	m_eventCalls.insert({ name, func });
 }
+
+void Window::addAnchor(const char* name, Face* face)
+{
+	m_anchorPoints.insert({ name, face });
+}

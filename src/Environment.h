@@ -25,14 +25,16 @@ public:
 	void init(tinyxml2::XMLElement* pLevel);
 
 	void render(glm::vec2 camera, float scale);
-
+	std::vector<glm::vec2> getNodes() { return m_nodes; }
 private:
 	b2World* m_pWorld;
 	DebugRenderer* m_pDebug;
 
-	std::vector<b2Vec2> m_nodes;
+	std::vector<glm::vec2> m_nodes;
 	b2Body* m_pBody;
 	b2Fixture* m_pFixture;
+
+	glm::vec2 findIntersection(glm::vec2 a, glm::vec2 b, glm::vec2 aMin, glm::vec2 bMin);
 };
 
 #endif /* ENVIRONMENT_H_ */

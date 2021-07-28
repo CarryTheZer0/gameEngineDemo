@@ -71,7 +71,8 @@ void Player::update(float deltaTime)
 	else if (m_grounded)
 	{
 		m_body.getBody()->SetLinearVelocity(b2Vec2(-0.0f, y));
-		m_sprite.playAnimation("idle", false);
+		if (!m_snap)
+			m_sprite.playAnimation("idle", false);
 	}
 	else
 	{
@@ -112,7 +113,8 @@ void Player::update(float deltaTime)
 
 	if (m_shouldReset)
 	{
-		m_body.getBody()->SetTransform(b2Vec2(-3.0f, 1.0f), 0.0f);
+		glm::vec2 spawnPos = m_pParentScene->getSpawnPoint();
+		m_body.getBody()->SetTransform(b2Vec2(spawnPos.x, spawnPos.y), 0.0f);
 		m_body.getBody()->SetLinearVelocity(b2Vec2());
 		m_shouldReset = false;
 	}
@@ -122,16 +124,20 @@ void Player::update(float deltaTime)
 
 void Player::camUpdate()
 {
+	glm::vec2 castOrigin = m_pParentScene->getCamera().getScale() * m_transform;
+	castOrigin -= glm::vec2(0.0f, 60.0f * m_pParentScene->getCamera().getScale());
+
+	m_pPhoto->setCastOrigin(castOrigin);
+	m_pPhoto->setLookDir(glm::vec2(m_lookDirection.x, m_lookDirection.y));
 	if (m_snap)
 	{
 		glm::vec2 shadowOrigin;
 
-		// TODO dont know why y component is offset and reversed - maybe box2d and openGL use opposite directions for y
+		// TODO Renderer renders from top left, shader uses bottom left as origin
 		shadowOrigin.x = -m_pParentScene->getCamera().getPos().x + m_transform.x * m_pParentScene->getCamera().getScale();
 		shadowOrigin.y = m_pParentScene->getCamera().getPos().y - m_transform.y * m_pParentScene->getCamera().getScale() + 768.0f;
 
-		m_pRenderer->setShadows(shadowOrigin + glm::vec2(0.0f, 60.0f * m_pParentScene->getCamera().getScale()),
-				glm::vec2(m_lookDirection.x, -m_lookDirection.y));
+		m_pRenderer->setShadowOrigin(shadowOrigin + glm::vec2(0.0f, 60.0f * m_pParentScene->getCamera().getScale()));
 
 		m_pParentScene->getCamera().setTargetScale(0.7f);
 		m_pParentScene->getCamera().setTargetPos(m_transform + m_mouseVector * 0.8f);
@@ -282,7 +288,8 @@ void Player::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug)
 
 void Player::contactFloor(Fixture* contact)
 {
-	m_sprite.playAnimation("run", true);
+	if (m_snap) m_sprite.playAnimation("snap", true);
+	else m_sprite.playAnimation("run", true);
 	m_grounded = true;
 }
 
