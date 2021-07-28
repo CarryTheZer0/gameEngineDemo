@@ -144,3 +144,16 @@ void Style::drawFill(glm::vec4 dimensions)
 	m_pRenderer->drawSprite(m_pSpriteSheet, srcRect, glm::vec2(dimensions.x + m_pSpriteSheet.getWidth() * m_marginLeft,
 			dimensions.y + m_pSpriteSheet.getHeight() * m_marginUpper), glm::vec2(), size);
 }
+
+void Style::drawImage(glm::vec4 dimensions, glm::vec4 srcRect, const char* fileName)
+{
+	Texture2D tex = ResourceManager::getTexture(fileName);
+
+	//glm::vec4 srcRect = glm::vec4( 0.0f , 0.0f,
+	//		1.0f, 1.0f);
+
+	glm::vec2 size = glm::vec2(dimensions.z, dimensions.w);
+
+	m_pRenderer->drawSprite(tex, srcRect, glm::vec2(dimensions.x, dimensions.y),
+			glm::vec2(), size);
+}

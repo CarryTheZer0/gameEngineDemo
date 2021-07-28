@@ -28,15 +28,18 @@ public:
     		glm::vec2 position, glm::vec2 camera = glm::vec2(), glm::vec2 size = glm::vec2(10.0f, 10.0f),
 			float rotate = 0.0f, glm::vec2 rotateOffset = glm::vec2(), glm::vec3 color = glm::vec3(1.0f));
     void draw();
-    void setShadows(glm::vec2 pos, glm::vec2 dir);
+    void drawLineOfSightFilter(glm::vec2 a);
+    void setShadowOrigin(glm::vec2 pos);
 private:
     // Render state
     Shader       m_shader;
     unsigned int m_quadVAO;
     unsigned int m_quadVBO;
     unsigned int m_quadIBO;
+    unsigned int m_quadSSBO;
     int m_texCount;
     int m_batchOffset;
+    int m_batchOffsetFilter;
     std::map<unsigned int, int> m_texIDs;
     // Initializes and configures the quad's buffer and vertex attributes
     void initRenderData();

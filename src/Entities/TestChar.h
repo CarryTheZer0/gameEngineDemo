@@ -41,7 +41,7 @@ public:
 	void camUpdate() override;
 	void render(float percent, glm::vec2 camera, float scale) override;
 
-	void jump(float yForce = 300.0f);
+	void jump(float yForce = 400.0f);
 	void reset();
 	void flipX(bool facingRight);
 	void takePhoto();

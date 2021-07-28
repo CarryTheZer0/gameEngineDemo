@@ -24,6 +24,7 @@ public:
 	void drawPanel(glm::vec4 dimensions, int srcY = 0);
 	void drawMenu(glm::vec4 dimensions);
 	void drawButton(glm::vec4 dimensions);
+	void drawImage(glm::vec4 dimensions, glm::vec4 srcRect, const char* fileName);
 private:
 	UIRenderer* m_pRenderer;
 	Texture2D m_pSpriteSheet;

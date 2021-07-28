@@ -15,6 +15,7 @@
 Charger::Charger(GameplayScene* pParentScene, SpriteRenderer* pRenderer, DebugRenderer* pDebug) :
 	Entity(pParentScene, pRenderer, pDebug),
 	m_sprite(this, pRenderer, "animal", glm::vec4(0.0f, 0.0f, 0.25f, 1.0f), 0.2f, 0.3f),
+	m_photographable(this, "animalPhoto"),
 	m_facingRight(true),
 	m_charging(false),
 	m_contact(false)
@@ -123,6 +124,7 @@ void Charger::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug, bool f
 	addComponent(&m_body);
 	addComponent(&m_colliderMain);
 	addComponent(&m_colliderCircle);
+	addComponent(&m_photographable);
 
 	m_sprite.addAnimation(glm::vec4(0.0f, 0.0f, 0.25f, 1.0f), 4, "run");
 	m_sprite.addAnimation(glm::vec4(0.5f, 0.0f, 0.75f, 1.0f), 1, "idle");

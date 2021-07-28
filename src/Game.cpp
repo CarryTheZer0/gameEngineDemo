@@ -75,11 +75,14 @@ void Game::init()
     // load textures
     ResourceManager::loadTexture("Resources/Textures/SpritesheetPlayer.png", true, "run");
     ResourceManager::loadTexture("Resources/Textures/SpritesheetAnimal.png", true, "animal");
+    ResourceManager::loadTexture("Resources/Textures/PhotoAnimal.png", true, "animalPhoto");
     ResourceManager::loadTexture("Resources/Textures/spritesheetMushroom.png", true, "mush");
+    ResourceManager::loadTexture("Resources/Textures/PhotoMushroom.png", true, "mushPhoto");
     ResourceManager::loadTexture("Resources/Textures/platformsketch.png", true, "platform");
     ResourceManager::loadTexture("Resources/Textures/dplan.png", true, "dplan");
     ResourceManager::loadTexture("Resources/Textures/sketchBackground.png", true, "background");
-    ResourceManager::loadTexture("Resources/Textures/UItest.png", true, "UItest");
+    ResourceManager::loadTexture("Resources/Textures/UI/UItest.png", true, "UItest");
+    ResourceManager::loadTexture("Resources/Textures/UI/ExitButton.png", true, "ExitButton");
 
     glfwSetWindowUserPointer( m_pWindow, &m_input );
 

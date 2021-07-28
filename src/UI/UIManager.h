@@ -34,6 +34,9 @@ public:
 	Style getStyle(const char* name);
 	Window* loadUI(const char* filepath, const char* name);
 	void destroyUI(const char* name);
+
+	Face* addElement(Face* pParent, Window* pContext, const char* name, const char* type,
+			const char* style);
 private:
 	InputHandler* m_pInput;
 	// TODO Memeory leaks here!!

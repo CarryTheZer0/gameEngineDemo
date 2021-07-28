@@ -16,6 +16,7 @@
 #include "Window.h"
 #include "Panel.h"
 #include "Button.h"
+#include "ImagePanel.h"
 
 UIManager::UIManager(InputHandler* pInput)
 {
@@ -99,8 +100,10 @@ void UIManager::destroyUI(const char* name)
 
 void UIManager::createFactories()
 {
+	m_factories.insert({ "Face", new UIFactory<Face> });
 	m_factories.insert({ "Panel", new UIFactory<Panel> });
 	m_factories.insert({ "Button", new UIFactory<Button> });
+	m_factories.insert({ "ImagePanel", new UIFactory<ImagePanel> });
 }
 
 void UIManager::loadElement(tinyxml2::XMLElement* pFace, Face* pParent, Window* pContext)
@@ -131,6 +134,18 @@ void UIManager::loadElement(tinyxml2::XMLElement* pFace, Face* pParent, Window* 
 		pProperty = pProperty->NextSiblingElement("Property");
 	}
 
+	// Load anchor points
+	tinyxml2::XMLElement* pAnchor = pFace->FirstChildElement("Anchor");
+	while (pAnchor)
+	{
+		const char* anchorName;
+
+		pAnchor->QueryStringAttribute("Name", &anchorName);
+
+		pContext->addAnchor(anchorName, newFace);
+		pAnchor = pAnchor->NextSiblingElement("Anchor");
+	}
+
 	// Load child UI elements
 	tinyxml2::XMLElement* pChild = pFace->FirstChildElement("Face");
 	while (pChild)
@@ -138,4 +153,13 @@ void UIManager::loadElement(tinyxml2::XMLElement* pFace, Face* pParent, Window* 
 		loadElement(pChild, newFace, pContext);
 		pChild = pChild->NextSiblingElement("Face");
 	}
+}
+
+Face* UIManager::addElement(Face* pParent, Window* pContext, const char* name, const char* type,
+		const char* style)
+{
+	Face* newFace = m_factories[type]->MakeFace(name, m_styles[style], pContext);
+	pParent->addChild(newFace);
+
+	return newFace;
 }

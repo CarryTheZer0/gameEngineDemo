@@ -15,8 +15,12 @@
 MushroomMonster::MushroomMonster(GameplayScene* pParentScene, SpriteRenderer* pRenderer, DebugRenderer* pDebug) :
 	Entity(pParentScene, pRenderer, pDebug),
 	m_sprite(this, pRenderer, "mush", glm::vec4(0.0f, 0.0f, 0.125f, 1.0f), 0.2f, 0.45f),
+	m_photographable(this, "mushPhoto"),
 	m_facingRight(true),
-	m_contact(false)
+	m_contact(false),
+	m_jumpTarget(nullptr),
+	m_timeElapsed(0.0f),
+	m_state(IDLE)
 {}
 
 void MushroomMonster::update(float deltaTime)
@@ -134,6 +138,7 @@ void MushroomMonster::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug
 	addComponent(&m_colliderMain);
 	addComponent(&m_colliderJump);
 	addComponent(&m_colliderCircle);
+	addComponent(&m_photographable);
 
 	m_sprite.addAnimation(glm::vec4(0.875f, 0.0f, 1.0f, 1.0f), 1, "run");
 	m_sprite.addAnimation(glm::vec4(0.875f, 0.0f, 1.0f, 1.0f), 1, "idle");
@@ -208,7 +213,7 @@ void MushroomMonster::contactJump(Fixture* contact)
 		m_jumpTarget = dynamic_cast<Player*>(contact->getOwner());
 		Body* pB = m_jumpTarget->getComponent<Body>();
 		if (pB->getBody()->GetLinearVelocity().y > 1.0f)
-			m_jumpTarget->jump(400.0f);
+			m_jumpTarget->jump(500.0f);
 	}
 }
 
