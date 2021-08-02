@@ -13,13 +13,20 @@
 #include "UI/UIManager.h"
 #include "Entities/TestChar.h"
 #include "Components/Photographable.h"
+#include "Environment.h"
 
-PhotographSystem::PhotographSystem(Player* pPlayer, UIManager* pUI) :
+struct PhotoElement
+{
+	std::string imageName;
+	float minAngle, maxAngle, widthHeightRatio;
+};
+
+PhotographSystem::PhotographSystem(Player* pPlayer, UIManager* pUI, Environment* pEnv) :
 	m_pPlayer(pPlayer),
 	m_pUI(pUI),
 	m_lookDir(),
-	m_castOrigin()
-
+	m_castOrigin(),
+	m_pEnv(pEnv)
 {}
 
 void PhotographSystem::takePhoto(glm::vec2 pos, glm::vec2 dir)
@@ -31,7 +38,7 @@ void PhotographSystem::takePhoto(glm::vec2 pos, glm::vec2 dir)
 
 	bottomDir = glm::mat2(glm::cos(lensAngle), -glm::sin(lensAngle), glm::sin(lensAngle), glm::cos(lensAngle)) * dir;
 
-	std::map<float, std::tuple<Entity*, float, float>> hits;
+	std::map<float, PhotoElement> hits;
 
 	// find the min and max corner of each entity relative to the bottom of the field of view
 	for (Entity* ent : m_targets)
@@ -58,8 +65,14 @@ void PhotographSystem::takePhoto(glm::vec2 pos, glm::vec2 dir)
 
 		for (glm::vec2 coord : coords)
 		{
+
 			currentDir = glm::normalize(coord - pos);
 			float currentAngle = glm::acos(glm::dot(currentDir, bottomDir));
+
+			//remove coords behind the player
+			glm::vec2 lookTangent = rotateVector(m_lookDir, 1.5708); // 90 degrees
+			crossProdSign = (-lookTangent.x) * (-currentDir.y) - (-currentDir.x) * (-lookTangent.y);
+			if (crossProdSign < 0) continue;
 
 			// adjust sign
 			crossProdSign = (-bottomDir.x) * (-currentDir.y) - (-currentDir.x) * (-bottomDir.y);
@@ -71,28 +84,37 @@ void PhotographSystem::takePhoto(glm::vec2 pos, glm::vec2 dir)
 			else if (currentAngle > maxAngle) maxAngle = currentAngle;
 		}
 
-		hits.emplace(-glm::length(ent->getPos() - pos), std::make_tuple(ent, minAngle, maxAngle));
+		Photographable* photo = ent->getComponent<Photographable>();
+		PhotoElement ph = {photo->getNameId(), minAngle, maxAngle, photo->getWidthRatio()};
+		hits.emplace(-glm::length(ent->getPos() - pos), ph);
+	}
+
+	std::vector<glm::vec2> nodes = m_pEnv->getNodes();
+	// link back to start
+	nodes.emplace_back(nodes[0]);
+	for (int i = 0; i < nodes.size() - 1; i++)
+	{
+		glm::vec2 nodeA = 80.0f * nodes[i];
+		glm::vec2 nodeB = 80.0f * nodes[i + 1];
+
+		// process env
 	}
 
 	Window* pWindow = m_pUI->loadUI("Resources/Data/UI/photoTest.xml", "PhotoTest");
 
 	for (auto hit : hits)
 	{
-		Photographable* photo = std::get<0>(hit.second)->getComponent<Photographable>();
-		if (photo)
-		{
-			float minPercent = std::get<1>(hit.second)/0.6f * 100.0f;
-			float maxPercent = std::get<2>(hit.second)/0.6f * 100.0f;
+		float minPercent = hit.second.minAngle/0.6f * 100.0f;
+		float maxPercent = hit.second.maxAngle/0.6f * 100.0f;
 
-			// only draw entities in range
-			if ((minPercent < 0 && maxPercent < 0) || (minPercent > 100 && maxPercent > 100)) continue;
+		// only draw entities in range
+		if ((minPercent < 0 && maxPercent < 0) || (minPercent > 100 && maxPercent > 100)) continue;
 
-			Face* pParent = pWindow->getAnchor("ImageBase");
-			Face* pNewFace = m_pUI->addElement(pParent, pWindow, "image", "ImagePanel", "test");
-			pNewFace->setProperty("imageName", photo->getNameId());
+		Face* pParent = pWindow->getAnchor("ImageBase");
+		Face* pNewFace = m_pUI->addElement(pParent, pWindow, "image", "ImagePanel", "test");
 
-			drawElement(minPercent, maxPercent, pNewFace, photo->getWidthRatio());
-		}
+		pNewFace->setProperty("imageName", hit.second.imageName);
+		drawElement(minPercent, maxPercent, pNewFace, hit.second.widthHeightRatio);
 	}
 
 	using std::placeholders::_1;
@@ -125,8 +147,7 @@ std::vector<glm::vec2> PhotographSystem::computeCorners(Entity* ent)
 	return coords;
 }
 
-std::vector<std::pair<float, glm::vec2>> PhotographSystem::generateShadows(
-		std::vector<glm::vec2> nodes, float scale)
+std::vector<std::pair<float, glm::vec2>> PhotographSystem::generateShadows(float scale)
 {
 	std::vector<glm::vec2> rays;
 
@@ -136,6 +157,8 @@ std::vector<std::pair<float, glm::vec2>> PhotographSystem::generateShadows(
 	rays.push_back(startRay);
 	glm::vec2 endRay = rotateVector(m_lookDir, -lensAngle);
 	rays.push_back(endRay);
+
+	std::vector<glm::vec2> nodes = m_pEnv->getNodes();
 
 	// add 3 rays for each corner
 	for (glm::vec2 n : nodes)
@@ -186,6 +209,8 @@ std::vector<std::pair<float, glm::vec2>> PhotographSystem::generateShadows(
 		}
 
 		// compute angle value for each ray - this is the angle between the ray and an arbitrary base vector
+		// TODO objects behind the camera are drawn when over the baseAngle - should be ignored
+		// maybe this can be done in/after the computeCorners() function call
 		glm::vec2 castDirection = currentPoint - m_castOrigin;
 		castDirection = glm::normalize(castDirection);
 		glm::vec2 baseAngle = rotateVector(endRay, -0.1f);
@@ -257,9 +282,10 @@ void PhotographSystem::drawElement(float minPercent, float maxPercent, Face* pan
 	if (width > 100.0f)
 	{
 		// cut off OOB pixels on the x axis
-		float overlapWidth = ((width / 100.0f) - 1.0f) / 2;
-		panel->setProperty("srcXMin", std::to_string(overlapWidth));
-		panel->setProperty("srcXMax", std::to_string(1.0f - overlapWidth));
+		float overlapWidth = (width - 100.0f) / 2;
+		float overlapPercent = overlapWidth / width;
+		panel->setProperty("srcXMin", std::to_string(overlapPercent));
+		panel->setProperty("srcXMax", std::to_string(1.0f - overlapPercent));
 		width = 100.0f;
 	}
 	else

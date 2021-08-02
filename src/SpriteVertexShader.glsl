@@ -6,7 +6,6 @@ layout (location = 2) in float iTexIndex;
 out vec2 texCoords;
 out float texIndex;
 
-uniform mat4 view;
 uniform mat4 projection;
 uniform int iFilterPolySize;
 
@@ -14,5 +13,5 @@ void main()
 {
     texCoords = iTexCoords;
     texIndex = iTexIndex;
-    gl_Position = projection * view * vec4(position, 0.0, 1.0);
+    gl_Position = projection * vec4(position, 0.0, 1.0);
 }

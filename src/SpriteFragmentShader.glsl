@@ -9,7 +9,6 @@ in float texIndex;
 out vec4 color;
 
 uniform sampler2D images[32]; // 32 = maxTexUnits in SpriteRenderer.cpp
-uniform vec3 spriteColor;
 uniform vec2 castOrigin;
 uniform int filterPolySize;
 
@@ -37,6 +36,12 @@ bool checkPixel()
 		return true;
 	}
 	
+	if (isWithin(vec2(gl_FragCoord.x, gl_FragCoord.y), filterVertices[0], castOrigin)
+		|| isWithin(vec2(gl_FragCoord.x, gl_FragCoord.y), castOrigin, filterVertices[filterPolySize]))
+	{
+		return false;
+	}
+	
 	// if pixel is within any given triangle defined in filterVertices return true
 	for (int i=0; i < filterPolySize; i++)
 	{
@@ -54,7 +59,7 @@ bool checkPixel()
 void main()
 {    
 	int index = int(texIndex);
-	vec4 shadowColor = vec4(spriteColor, 1.0) * texture(images[index], texCoords);
+	vec4 shadowColor = texture(images[index], texCoords);
 	
 	if (!checkPixel()) 
 	{
