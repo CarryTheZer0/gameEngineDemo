@@ -56,7 +56,7 @@ void SpriteRenderer::drawSprite(Texture2D &texture, glm::vec4 srcCoords,
 
     // prepare transformations
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(position, 0.0f));  // first translate (transformations are: scale happens first, then rotation, and then final translation happens; reversed order)
+    model = glm::translate(model, glm::vec3(position + camera, 0.0f));  // first translate (transformations are: scale happens first, then rotation, and then final translation happens; reversed order)
 
     model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f)); // move origin of rotation to center of quad
     model = glm::translate(model, glm::vec3(rotateOffset.x * size.x, rotateOffset.y * size.y, 0.0f));
@@ -96,12 +96,6 @@ void SpriteRenderer::drawSprite(Texture2D &texture, glm::vec4 srcCoords,
 	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, m_batchOffset * sizeof(indices), sizeof(indices), indices);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	m_batchOffset++;
-
-	// translate camera
-	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(camera.x, camera.y, 0.0f));
-	// set uniforms
-	m_shader.setMatrix4("view", view);
-    m_shader.setVector3f("spriteColor", color);
 
 	int samplers[m_texCount];
 	for (int i = 0; i < m_texCount; i++)

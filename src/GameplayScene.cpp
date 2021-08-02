@@ -23,6 +23,7 @@
 
 #include "Entities/TestChar.h"
 #include "Entities/SceneLink.h"
+#include "Entities/TestFloor.h"
 
 #include "Spawner.h"
 
@@ -33,7 +34,7 @@ GameplayScene::GameplayScene(InputHandler* pInput, SpriteRenderer* pRenderer, De
 	m_entityRemoved(false),
 	m_parentGame(pGame),
 	m_pPlayer(nullptr),
-	m_photo(m_pPlayer, &m_ui)
+	m_photo(m_pPlayer, &m_ui, &m_env)
 {
 	b2Vec2 gravity(0.0f, 10.0f);
 	m_pWorld = new b2World(gravity);
@@ -82,12 +83,9 @@ void GameplayScene::loadScene()
 
 	// load player
 	tinyxml2::XMLElement* pPlayer = pScene->FirstChildElement("player");
-	pPlayer->QueryFloatAttribute("x", &x);
-	pPlayer->QueryFloatAttribute("y", &y);
 	Player* player = new Player(m_parentGame, this, m_pRenderer, m_pDebug, m_pInput, &m_photo);
 	player->init(m_pWorld, m_spawnPoint, m_pDebug);
 	m_pPlayer = player;
-	m_entities.emplace_back(player);
 
 	// load entities
 	tinyxml2::XMLElement* pEntities = pScene->FirstChildElement("entities");
@@ -129,6 +127,11 @@ void GameplayScene::loadScene()
 
 		pSceneLink = pSceneLink->NextSiblingElement("sceneLink");
 	}
+
+	//Entity* test = new Floor(m_pRenderer, glm::vec2(80.0f * 0.5f, 80.0f * 5.2f), -0.8f);
+	//m_entities.emplace_back(test);
+
+	m_entities.emplace_back(player);
 }
 
 void GameplayScene::saveScene() {}
@@ -211,13 +214,12 @@ void GameplayScene::render(float percent)
 {
     Texture2D texBack = ResourceManager::getTexture("background");
     m_pRenderer->drawSprite(texBack, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
-    		m_camera.getPos(), glm::vec2(), glm::vec2(texBack.getWidth() * 0.7, texBack.getHeight() * 0.7));
+    		m_camera.getPos(), -m_camera.getPos(), glm::vec2(texBack.getWidth() * 0.7, texBack.getHeight() * 0.7));
 
     m_env.render(m_camera.getPos(), m_camera.getScale());
 
     // process filter for camera line of sight
-    std::vector<std::pair<float, glm::vec2>> nodes = m_photo.generateShadows(
-    		m_env.getNodes(), m_camera.getScale());
+    std::vector<std::pair<float, glm::vec2>> nodes = m_photo.generateShadows(m_camera.getScale());
     for (auto node : nodes)
     {
     	//m_pDebug->drawLine(node.second, m_pPlayer->getPos() * m_camera.getScale() - glm::vec2(0.0f, 60.0f * m_camera.getScale()), glm::vec2());

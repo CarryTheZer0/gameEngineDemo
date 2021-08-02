@@ -11,26 +11,21 @@
 #include <glm/glm.hpp>
 #include "../Entity.h"
 #include "../Components/Sprite.h"
-#include "../Components/Body.h"
-#include "../Components/BoxCollider.h"
 
 class SpriteRenderer;
-class DebugRenderer;
 
 class Floor : public Entity
 {
 public:
-	Floor(SpriteRenderer* pRenderer,  DebugRenderer* pDebug);
+	Floor(SpriteRenderer* pRenderer, glm::vec2 pos, float parallax);
 	~Floor() = default;
 
-	void init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug);
 	void update(float deltaTime) override;
 	void camUpdate() override {}
 	void render(float percent, glm::vec2 camera, float scale) override;
 private:
 	Sprite m_sprite;
-	Body m_body;
-	BoxCollider m_colliderMain;
+	float m_parallax;
 };
 
 #endif /* ENTITIES_TESTFLOOR_H_ */
