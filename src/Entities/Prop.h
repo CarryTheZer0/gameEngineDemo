@@ -5,8 +5,8 @@
  *      Author: mchlp
  */
 
-#ifndef ENTITIES_TESTFLOOR_H_
-#define ENTITIES_TESTFLOOR_H_
+#ifndef ENTITIES_PROP_H_
+#define ENTITIES_PROP_H_
 
 #include <glm/glm.hpp>
 #include "../Entity.h"
@@ -14,11 +14,11 @@
 
 class SpriteRenderer;
 
-class Floor : public Entity
+class Prop : public Entity
 {
 public:
-	Floor(SpriteRenderer* pRenderer, glm::vec2 pos, float parallax);
-	~Floor() = default;
+	Prop(SpriteRenderer* pRenderer, glm::vec2 pos, const char* name, float parallax);
+	~Prop() = default;
 
 	void update(float deltaTime) override;
 	void camUpdate() override {}
@@ -28,4 +28,4 @@ private:
 	float m_parallax;
 };
 
-#endif /* ENTITIES_TESTFLOOR_H_ */
+#endif /* ENTITIES_PROP_H_ */

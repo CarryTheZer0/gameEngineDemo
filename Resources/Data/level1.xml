@@ -31,4 +31,8 @@
 		<sceneLink linkName="leftLower" fileName="level4" x="-4.5" y="9.5" halfWidth="0.5" halfHeight="2.5" spawnX="3.5" spawnY="4.9" />
 		<sceneLink linkName="right" fileName="level2" x="27.0" y="8.0" halfWidth="0.5" halfHeight="2.5" spawnX="-3.5" spawnY="3.0" />
 	</sceneLinks>
+	<set>
+		<prop name="background" x="7.0" y="5.0" parallax="0.8" depth="-100" />
+		<prop name="platform" x="0.5" y="5.2" parallax="0.0" depth="-1"  />
+	</set>
 </scene>
