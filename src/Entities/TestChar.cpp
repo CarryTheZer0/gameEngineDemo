@@ -234,6 +234,8 @@ void Player::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug)
 	m_sprite.playAnimation("run");
 
 	m_transform = glm::vec2(pos.x * 80, pos.y * 80);
+	m_depth = 10;
+
 	m_pParentScene->getCamera().setScale(1.0f);
 	m_pParentScene->getCamera().setPos(m_transform);
 

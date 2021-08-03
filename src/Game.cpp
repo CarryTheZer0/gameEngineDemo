@@ -22,9 +22,9 @@
 #include "Rendering/ResourceManager.h"
 
 #include "Entities/TestChar.h"
-#include "Entities/TestFloor.h"
 #include "Entities/Charger.h"
 #include "Entities/MushroomMonster.h"
+#include "Entities/Prop.h"
 
 Game::Game() :
 		m_running(true),

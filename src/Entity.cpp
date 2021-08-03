@@ -12,5 +12,7 @@
 Entity::Entity(GameplayScene* pParentScene, SpriteRenderer* pRenderer, DebugRenderer* pDebug) :
 	m_pParentScene(pParentScene),
 	m_pRenderer(pRenderer),
-	m_pDebug(pDebug)
+	m_pDebug(pDebug),
+	m_transform(glm::vec2(0.0f, 0.0f)),
+	m_depth(0)
 {}

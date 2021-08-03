@@ -33,6 +33,8 @@ public:
 	glm::vec2 getPos() { return m_transform; }
 	void move(glm::vec2 pos) { m_transform += pos; }
 	void setPos(glm::vec2 pos) { m_transform = pos; }
+	void setDepth(int d) { m_depth = d; }
+	int getDepth() { return m_depth; }
 
 	void addComponent(Component* pComp) { m_components.push_back(pComp); }
 
@@ -46,6 +48,7 @@ public:
 protected:
 	std::vector<Component*> m_components;
 	glm::vec2 m_transform;
+	int m_depth;
 
 	GameplayScene* m_pParentScene;
 	SpriteRenderer* m_pRenderer;

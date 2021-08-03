@@ -15,4 +15,7 @@
 	<sceneLinks>
 		<sceneLink linkName="right" fileName="level1" x="4.5" y="1.5" halfWidth="0.5" halfHeight="2.5" spawnX="-3.5" spawnY="3.5"/>
 	</sceneLinks>
+	<set>
+		<prop name="background" x="7.0" y="5.0" parallax="0.8" depth="-100" />
+	</set>
 </scene>

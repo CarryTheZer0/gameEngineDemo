@@ -11,6 +11,7 @@
 #include <assert.h>
 #include <vector>
 
+#include "Entities/Prop.h"
 #include "Entity.h"
 #include "InputHandler.h"
 #include "Game.h"
@@ -20,11 +21,10 @@
 #include "Rendering/DebugRenderer.h"
 #include "Rendering/UIRenderer.h"
 #include "Rendering/ResourceManager.h"
+#include "Rendering/RenderQueue.h"
 
 #include "Entities/TestChar.h"
 #include "Entities/SceneLink.h"
-#include "Entities/TestFloor.h"
-
 #include "Spawner.h"
 
 GameplayScene::GameplayScene(InputHandler* pInput, SpriteRenderer* pRenderer, DebugRenderer* pDebug,
@@ -86,6 +86,7 @@ void GameplayScene::loadScene()
 	Player* player = new Player(m_parentGame, this, m_pRenderer, m_pDebug, m_pInput, &m_photo);
 	player->init(m_pWorld, m_spawnPoint, m_pDebug);
 	m_pPlayer = player;
+	m_entities.emplace_back(player);
 
 	// load entities
 	tinyxml2::XMLElement* pEntities = pScene->FirstChildElement("entities");
@@ -128,10 +129,27 @@ void GameplayScene::loadScene()
 		pSceneLink = pSceneLink->NextSiblingElement("sceneLink");
 	}
 
-	//Entity* test = new Floor(m_pRenderer, glm::vec2(80.0f * 0.5f, 80.0f * 5.2f), -0.8f);
-	//m_entities.emplace_back(test);
+	// load map
+	tinyxml2::XMLElement* pSet = pScene->FirstChildElement("set");
+	tinyxml2::XMLElement* pProp = pSet->FirstChildElement("prop");
 
-	m_entities.emplace_back(player);
+	while (pProp)
+	{
+		float x, y, parallax;
+		int depth;
+		const char* name;
+		pProp->QueryFloatAttribute("x", &x);
+		pProp->QueryFloatAttribute("y", &y);
+		pProp->QueryFloatAttribute("parallax", &parallax);
+		pProp->QueryIntAttribute("depth", &depth);
+		pProp->QueryStringAttribute("name", &name);
+
+		Entity* prop = new Prop(m_pRenderer, glm::vec2(80.0f * x, 80.0f * y), name, parallax);
+		prop->setDepth(depth);
+		m_entities.emplace_back(prop);
+
+		pProp = pProp->NextSiblingElement("prop");
+	}
 }
 
 void GameplayScene::saveScene() {}
@@ -212,10 +230,6 @@ void GameplayScene::update(float deltaTime)
 
 void GameplayScene::render(float percent)
 {
-    Texture2D texBack = ResourceManager::getTexture("background");
-    m_pRenderer->drawSprite(texBack, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
-    		m_camera.getPos(), -m_camera.getPos(), glm::vec2(texBack.getWidth() * 0.7, texBack.getHeight() * 0.7));
-
     m_env.render(m_camera.getPos(), m_camera.getScale());
 
     // process filter for camera line of sight
@@ -229,6 +243,7 @@ void GameplayScene::render(float percent)
         ));
     }
 
+    RenderQueue::sort(m_entities);
     for (Entity* e : m_entities)
     {
     	e->render(percent, -m_camera.getPos(), m_camera.getScale());
