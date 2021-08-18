@@ -12,12 +12,13 @@
 #include "../Rendering/Texture.h"
 
 class UIRenderer;
+class TextRenderer;
 
 class Style
 {
 public:
 	Style() = default;
-	Style(UIRenderer* pRenderer, const char* name, float marginLeft, float marginRight,
+	Style(UIRenderer* pRenderer, TextRenderer* pTextRenderer, const char* name, float marginLeft, float marginRight,
 			float marginUpper, float marginLower);
 	~Style() = default;
 
@@ -25,8 +26,10 @@ public:
 	void drawMenu(glm::vec4 dimensions);
 	void drawButton(glm::vec4 dimensions);
 	void drawImage(glm::vec4 dimensions, glm::vec4 srcRect, const char* fileName);
+	void drawText(glm::vec4 dimensions, const char* text, float size);
 private:
 	UIRenderer* m_pRenderer;
+	TextRenderer* m_pTextRenderer;
 	Texture2D m_pSpriteSheet;
 	float m_marginLeft;
 	float m_marginRight;

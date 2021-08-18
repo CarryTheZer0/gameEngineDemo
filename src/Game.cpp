@@ -18,6 +18,7 @@
 #include "Rendering/SpriteRenderer.h"
 #include "Rendering/DebugRenderer.h"
 #include "Rendering/UIRenderer.h"
+#include "Rendering/TextRenderer.h"
 #include "Rendering/Camera.h"
 #include "Rendering/ResourceManager.h"
 
@@ -45,6 +46,7 @@ void Game::init()
     ResourceManager::loadShader("src/SpriteVertexShader.glsl", "src/SpriteFragmentShader.glsl", nullptr, "sprite");
     ResourceManager::loadShader("src/DebugVertexShader.glsl", "src/DebugFragmentShader.glsl", nullptr, "debug");
     ResourceManager::loadShader("src/UIVertexShader.glsl", "src/UIFragmentShader.glsl", nullptr, "ui");
+    ResourceManager::loadShader("src/TextVertexShader.glsl", "src/TextFragmentShader.glsl", nullptr, "text");
 
     // configure shaders
     glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(m_width),
@@ -62,7 +64,12 @@ void Game::init()
     ResourceManager::getShader("ui").use().setInteger("images", 0);
     ResourceManager::getShader("ui").setMatrix4("projection", projection);
 
+    // text
+    ResourceManager::getShader("text").use().setInteger("text", 0);
+    ResourceManager::getShader("text").setMatrix4("projection", projection);
+
     // set render-specific controls
+    // TODO delete new pointers
     Shader debugShader = ResourceManager::getShader("debug");
     m_pDebugRenderer = new DebugRenderer(debugShader);
 
@@ -71,6 +78,9 @@ void Game::init()
 
     Shader uiShader = ResourceManager::getShader("ui");
     m_pUIRenderer = new UIRenderer(uiShader);
+
+    Shader textShader = ResourceManager::getShader("text");
+    m_pTextRenderer = new TextRenderer(textShader);
 
     // load textures
     ResourceManager::loadTexture("Resources/Textures/SpritesheetPlayer.png", true, "run");
@@ -109,7 +119,7 @@ void Game::init()
 //    		m_pUIRenderer, this, &m_sceneManager, "level1");
 
     MainMenu* sc1 = new MainMenu(&m_input, m_pRenderer, m_pDebugRenderer,
-    	m_pUIRenderer, this, &m_sceneManager);
+    	m_pUIRenderer, m_pTextRenderer, this, &m_sceneManager);
 
     unsigned int sc1ID = m_sceneManager.addScene(sc1);
     sc1->startScene();
@@ -147,7 +157,7 @@ int Game::run()
 
 		// render
 		glClearColor(0.18f, 0.38f, 0.37f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT);
 
         float percent = (accumulator / dt);
 

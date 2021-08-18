@@ -29,7 +29,7 @@
 
 GameplayScene::GameplayScene(InputHandler* pInput, SpriteRenderer* pRenderer, DebugRenderer* pDebug,
 		UIRenderer* pUIRenderer, Game* pGame, SceneManager* pSceneManager, const char* filename) :
-	Scene(pInput, pRenderer, pDebug, pUIRenderer, pGame, pSceneManager),
+	Scene(pInput, pRenderer, pDebug, pUIRenderer, nullptr, pGame, pSceneManager),
 	m_filename(filename),
 	m_entityRemoved(false),
 	m_parentGame(pGame),
@@ -42,7 +42,7 @@ GameplayScene::GameplayScene(InputHandler* pInput, SpriteRenderer* pRenderer, De
 	m_camera = Camera(pGame->getWidth(), pGame->getHeight());
 	m_ui = UIManager(pInput);
 
-	Style myStyle = Style(pUIRenderer, "UItest", 0.15f, 0.15f, 0.25f, 0.25f);
+	Style myStyle = Style(pUIRenderer, nullptr, "UItest", 0.15f, 0.15f, 0.25f, 0.25f);
 
 	m_ui.addStyle("test", myStyle);
 
@@ -250,7 +250,7 @@ void GameplayScene::render(float percent)
     }
 
 	m_pRenderer->draw();
-	m_pDebug->draw();
+	//m_pDebug->draw();
 
 	m_ui.render();
 	m_pUIRenderer->draw();

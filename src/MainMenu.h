@@ -16,7 +16,7 @@ class MainMenu : public Scene
 public:
 	MainMenu() = delete;
 	MainMenu(InputHandler* pInput, SpriteRenderer* pRenderer, DebugRenderer* pDebug,
-			UIRenderer* pUIRenderer, Game* pGame, SceneManager* pSceneManager);
+			UIRenderer* pUIRenderer, TextRenderer* pTextRenderer, Game* pGame, SceneManager* pSceneManager);
 
 	void loadScene() override;
 	void saveScene() override {};

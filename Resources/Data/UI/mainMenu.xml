@@ -11,6 +11,12 @@
 			<Property Name="wPercentage" Value="30" />
 			<Property Name="hPixels" Value="100" />
 			<Property Name="eventName" Value="StartGame" />
+			<Face Type="TextBox" Name="startText" Style="test">
+				<Property Name="text" Value="Start" />
+				<Property Name="textSize" Value="0.8" />
+				<Property Name="xPercentage" Value="5" />
+				<Property Name="yPercentage" Value="5" />
+			</Face>
 		</Face>
 		<Face Type="Button" Name="loadButton" Style="test">
 			<Property Name="xPercentage" Value="35" />
@@ -19,6 +25,12 @@
 			<Property Name="wPercentage" Value="30" />
 			<Property Name="hPixels" Value="100" />
 			<Property Name="eventName" Value="LoadGame" />
+			<Face Type="TextBox" Name="startText" Style="test">
+				<Property Name="text" Value="Load" />
+				<Property Name="textSize" Value="0.8" />
+				<Property Name="xPercentage" Value="5" />
+				<Property Name="yPercentage" Value="5" />
+			</Face>
 		</Face>
 		<Face Type="Button" Name="exitButton" Style="test">
 			<Property Name="xPercentage" Value="35" />
@@ -26,7 +38,13 @@
 			<Property Name="yPixels" Value="140" />
 			<Property Name="wPercentage" Value="30" />
 			<Property Name="hPixels" Value="100" />
-			<Property Name="eventName" Value="Exit" />'
+			<Property Name="eventName" Value="Exit" />
+			<Face Type="TextBox" Name="startText" Style="test">
+				<Property Name="text" Value="Exit" />
+				<Property Name="textSize" Value="0.8" />
+				<Property Name="xPercentage" Value="5" />
+				<Property Name="yPercentage" Value="5" />
+			</Face>
 		</Face>
 	</Face>
 </UI>
