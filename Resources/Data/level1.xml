@@ -7,8 +7,8 @@
 		<node x="-5.0" y="-1.0" />
 		<node x="-5.0" y="4.0" />
 		<node x="5.0" y="4.0" />
-		<node x="5.0" y="7.0" />
-		<node x="-5.0" y="7.0" />
+		<node x="5.0" y="6.5" />
+		<node x="-5.0" y="6.5" />
 		<node x="-5.0" y="12.0" />
 		<node x="19.0" y="12.0" />
 		<node x="19.0" y="11.0" />
@@ -33,6 +33,18 @@
 	</sceneLinks>
 	<set>
 		<prop name="background" x="7.0" y="5.0" parallax="0.8" depth="-100" />
-		<prop name="platform" x="0.5" y="5.2" parallax="0.0" depth="-1"  />
+		<prop name="platform" x="0.9" y="5.2" parallax="0.0" depth="-1"  />
+		<prop name="platform" x="0.5" y="13.2" parallax="0.0" depth="-1"  />
+		<prop name="platform" x="-7.5" y="5.2" parallax="0.0" depth="-1"  />
+		<prop name="platform" x="-7.5" y="13.2" parallax="0.0" depth="-1"  />
+		<prop name="platform" x="8.5" y="13.2" parallax="0.0" depth="-1"  />
+		<prop name="platform" x="16.5" y="13.2" parallax="0.0" depth="-1"  />
+		<prop name="platform" x="23.5" y="12.2" parallax="0.0" depth="-1"  />
+		<prop name="platform" x="26.5" y="11.7" parallax="0.0" depth="-1"  />
+
+		<prop name="platform" x="0.9" y="5.2" parallax="-0.2" depth="100"  />
+		<prop name="platform" x="0.5" y="13.2" parallax="-0.2" depth="100"  />
+		<prop name="platform" x="-7.5" y="5.2" parallax="-0.2" depth="100"  />
+		<prop name="platform" x="-7.5" y="13.2" parallax="-0.2" depth="100"  />
 	</set>
 </scene>

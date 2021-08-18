@@ -23,5 +23,5 @@ void Prop::update(float deltaTime)
 
 void Prop::render(float percent, glm::vec2 camera, float scale)
 {
-	m_sprite.render(percent, camera - (camera * m_parallax), scale);
+	m_sprite.render(percent, camera, scale);
 }

@@ -12,17 +12,18 @@
 #include "Rendering/SpriteRenderer.h"
 #include "Rendering/DebugRenderer.h"
 #include "Rendering/UIRenderer.h"
+#include "Rendering/TextRenderer.h"
 #include "Rendering/ResourceManager.h"
 
 #include "GameplayScene.h"
 
 MainMenu::MainMenu(InputHandler* pInput, SpriteRenderer* pRenderer, DebugRenderer* pDebug,
-		UIRenderer* pUIRenderer, Game* pGame, SceneManager* pSceneManager) :
-	Scene(pInput, pRenderer, pDebug, pUIRenderer, pGame, pSceneManager)
+		UIRenderer* pUIRenderer, TextRenderer* pTextRenderer, Game* pGame, SceneManager* pSceneManager) :
+	Scene(pInput, pRenderer, pDebug, pUIRenderer, pTextRenderer, pGame, pSceneManager)
 {
 	m_uiManager = UIManager(pInput);
 
-	Style myStyle = Style(pUIRenderer, "UItest", 0.15f, 0.15f, 0.25f, 0.25f);
+	Style myStyle = Style(pUIRenderer, pTextRenderer, "UItest", 0.15f, 0.15f, 0.25f, 0.25f);
 
 	m_uiManager.addStyle("test", myStyle);
 }
@@ -52,7 +53,6 @@ void MainMenu::render(float deltaTime)
     m_pRenderer->draw();
 
 	m_uiManager.render();
-	m_pUIRenderer->draw();
 }
 
 void MainMenu::exitGame(const char* buttonName)

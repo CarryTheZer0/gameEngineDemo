@@ -131,6 +131,7 @@ void Charger::init(b2World* pWorld, glm::vec2 pos, DebugRenderer* pDebug, bool f
 	m_sprite.playAnimation("idle");
 
 	m_transform = glm::vec2(pos.x * 80, pos.y * 80);
+	m_depth = 1;
 
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;

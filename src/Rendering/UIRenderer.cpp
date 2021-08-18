@@ -7,12 +7,15 @@
 
 #include "UIRenderer.h"
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 UIRenderer::UIRenderer(Shader &shader) :
 	m_batchOffset(0),
 	m_texCount(0),
 	m_shader(shader)
 {
-    initRenderData();
+	initRenderData();
 }
 
 UIRenderer::~UIRenderer()
@@ -139,8 +142,7 @@ void UIRenderer::initRenderData()
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * 1000, nullptr, GL_DYNAMIC_DRAW);
 
     uint32_t indices[] = {
-    		0, 1, 2, 2, 3, 0,
-			4, 5, 6, 6, 7, 4
+    		0, 1, 2, 2, 3, 0
     };
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_quadIBO);

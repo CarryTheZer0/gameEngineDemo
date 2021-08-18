@@ -9,11 +9,13 @@
 
 #include "Style.h"
 #include "../Rendering/UIRenderer.h"
+#include "../Rendering/TextRenderer.h"
 #include "../Rendering/ResourceManager.h"
 
-Style::Style(UIRenderer* pRenderer, const char* name, float marginLeft, float marginRight,
+Style::Style(UIRenderer* pRenderer, TextRenderer* pTextRenderer, const char* name, float marginLeft, float marginRight,
 		float marginUpper, float marginLower) :
 	m_pRenderer(pRenderer),
+	m_pTextRenderer(pTextRenderer),
 	m_marginLeft(marginLeft),
 	m_marginRight(marginRight),
 	m_marginUpper(marginUpper),
@@ -28,6 +30,7 @@ void Style::drawPanel(glm::vec4 dimensions, int srcY)
 	drawCorners(dimensions);
 	drawHorizontals(dimensions);
 	drawVerticals(dimensions);
+	m_pRenderer->draw();
 }
 
 void Style::drawMenu(glm::vec4 dimensions)
@@ -149,11 +152,15 @@ void Style::drawImage(glm::vec4 dimensions, glm::vec4 srcRect, const char* fileN
 {
 	Texture2D tex = ResourceManager::getTexture(fileName);
 
-	//glm::vec4 srcRect = glm::vec4( 0.0f , 0.0f,
-	//		1.0f, 1.0f);
-
 	glm::vec2 size = glm::vec2(dimensions.z, dimensions.w);
 
 	m_pRenderer->drawSprite(tex, srcRect, glm::vec2(dimensions.x, dimensions.y),
 			glm::vec2(), size);
+	m_pRenderer->draw();
+}
+
+void Style::drawText(glm::vec4 dimensions, const char* text, float size)
+{
+	m_pTextRenderer->drawString(text, dimensions.x, dimensions.y, 1.0f);
+	m_pTextRenderer->draw();
 }

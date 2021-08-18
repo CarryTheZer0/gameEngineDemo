@@ -15,6 +15,7 @@
 class SpriteRenderer;
 class DebugRenderer;
 class UIRenderer;
+class TextRenderer;
 class Entity;
 class Camera;
 
@@ -39,6 +40,7 @@ private:
 	SpriteRenderer* m_pRenderer;
 	DebugRenderer* m_pDebugRenderer;
 	UIRenderer* m_pUIRenderer;
+	TextRenderer* m_pTextRenderer;
 	SceneManager m_sceneManager;
 
 	bool m_running;

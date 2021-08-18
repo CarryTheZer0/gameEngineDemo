@@ -17,6 +17,7 @@
 #include "Panel.h"
 #include "Button.h"
 #include "ImagePanel.h"
+#include "TextBox.h"
 
 UIManager::UIManager(InputHandler* pInput)
 {
@@ -104,6 +105,7 @@ void UIManager::createFactories()
 	m_factories.insert({ "Panel", new UIFactory<Panel> });
 	m_factories.insert({ "Button", new UIFactory<Button> });
 	m_factories.insert({ "ImagePanel", new UIFactory<ImagePanel> });
+	m_factories.insert({ "TextBox", new UIFactory<TextBox> });
 }
 
 void UIManager::loadElement(tinyxml2::XMLElement* pFace, Face* pParent, Window* pContext)

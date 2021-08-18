@@ -5,8 +5,6 @@ out vec4 color;
 
 uniform sampler2D images[32]; // 32 = maxTexUnits in SpriteRenderer.cpp
 uniform vec3 spriteColor;
-uniform vec2 viewDirection;
-uniform vec2 castOrigin;
 
 void main()
 {    
